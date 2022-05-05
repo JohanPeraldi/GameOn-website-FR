@@ -2,6 +2,7 @@
  * DOM Elements
  */
 
+/* ********************* FIRST NAME ************************ */
 // "Prénom" input
 const firstNameInput = document.getElementById('first');
 
@@ -17,11 +18,14 @@ firstNameInputMessage.setAttribute('id', 'first-name-input-message');
 const nameMessageEmpty = 'Ce champ ne peut pas être vide';
 const nameMessageShort = 'Veuillez entrer au moins deux caractères';
 // Style the message
+const inputBorderStyle = '1px solid';
 const messageFontSize = '14px';
 const messageColor = 'red';
+const colorValid = 'green';
 firstNameInputMessage.style.fontSize = messageFontSize;
 firstNameInputMessage.style.color = messageColor;
 
+/* ********************* LAST NAME ************************ */
 // "Nom" input
 const lastNameInput = document.getElementById('last');
 
@@ -37,6 +41,7 @@ lastNameInputMessage.setAttribute('id', 'last-name-input-message');
 lastNameInputMessage.style.fontSize = messageFontSize;
 lastNameInputMessage.style.color = messageColor;
 
+/* *********************** EMAIL ************************** */
 // "Email" input
 const emailInput = document.getElementById('email');
 
@@ -54,6 +59,24 @@ const emailMessage = 'Veuillez entrer une adresse email valide du type x@x.x';
 emailInputMessage.style.fontSize = messageFontSize;
 emailInputMessage.style.color = messageColor;
 
+/* ******************* DATE OF BIRTH ********************** */
+// "Date of birth" input
+const dateOfBirthInput = document.getElementById('birthdate');
+
+// Parent of "date of birth" input
+const dateOfBirthInputParent = dateOfBirthInput.parentElement;
+
+// Create a span element that will contain a message
+// to be inserted after date of birth element
+const dateOfBirthInputMessage = document.createElement('span');
+// Give it an id
+dateOfBirthInputMessage.setAttribute('id', 'date-of-birth-input-message');
+// The message to display inside the created 'span' element
+const dateOfBirthMessage = 'Veuillez entrer votre date de naissance';
+// Style the message
+dateOfBirthInputMessage.style.fontSize = messageFontSize;
+dateOfBirthInputMessage.style.color = messageColor;
+
 
 /**
  * First name validation
@@ -68,10 +91,10 @@ firstNameInput.addEventListener('blur', ($event) => {
   if ($event.target.value.length > 1) {
     console.log('Le champ du prénom est valide');
     firstNameIsValid = true;
-    firstNameInput.style.border = '1px solid green';
+    firstNameInput.style.border = inputBorderStyle + colorValid;
     firstNameInput.style.backgroundColor = '#E6FFEA';
   } else {
-    firstNameInput.style.border = '1px solid' + messageColor;
+    firstNameInput.style.border = inputBorderStyle + messageColor;
     firstNameInput.style.backgroundColor = '#FFE6E6';
     if ($event.target.value.length === 1) {
       console.log('Veuillez entrer au moins deux caractères');
@@ -111,10 +134,10 @@ lastNameInput.addEventListener('blur', ($event) => {
   if ($event.target.value.length > 1) {
     console.log('Le champ du nom est valide');
     lastNameIsValid = true;
-    lastNameInput.style.border = '1px solid green';
+    lastNameInput.style.border = inputBorderStyle + colorValid;
     lastNameInput.style.backgroundColor = '#E6FFEA';
   } else {
-    lastNameInput.style.border = '1px solid' + messageColor;
+    lastNameInput.style.border = inputBorderStyle + messageColor;
     lastNameInput.style.backgroundColor = '#FFE6E6';
     if ($event.target.value.length === 1) {
       console.log('Veuillez entrer au moins deux caractères');
@@ -153,11 +176,11 @@ const emailIsValid = (email) => {
 emailInput.addEventListener('blur', ($event) => {
   if (emailIsValid($event.target.value)) {
     console.log('Le champ email est valide');
-    emailInput.style.border = '1px solid green';
+    emailInput.style.border = inputBorderStyle + colorValid;
     emailInput.style.backgroundColor = '#E6FFEA';
   } else {
     console.log('Veuillez entrer une adresse email valide du type x@x.x');
-    emailInput.style.border = '1px solid' + messageColor;
+    emailInput.style.border = inputBorderStyle + messageColor;
     emailInput.style.backgroundColor = '#FFE6E6';
     emailInputMessage.textContent = emailMessage;
     emailInputParent.appendChild(emailInputMessage);
@@ -171,5 +194,41 @@ emailInput.addEventListener('focus', () => {
   if (document.getElementById('email-input-message') !== null) {
     // Remove element
     emailInputParent.removeChild(emailInputMessage);
+  }
+});
+
+
+/**
+ * Date of birth validation
+ */
+
+// A variable to store the validity of the input
+let dateOfBirthIsValid = false;
+
+// Check that, when clicking outside "date of birth" input box,
+// date of birth has been entered (and is valid? ie. not a future or too close in the past date)
+dateOfBirthInput.addEventListener('blur', ($event) => {
+  console.log($event.target.value);
+  if ($event.target.value !== '') {
+    console.log('Le champ date de naissance est valide');
+    dateOfBirthIsValid = true;
+    dateOfBirthInput.style.border = inputBorderStyle + colorValid;
+    dateOfBirthInput.style.backgroundColor = '#E6FFEA';
+  } else {
+    console.log('Le champ date de naissance est invalide');
+    dateOfBirthInput.style.border = inputBorderStyle + messageColor;
+    dateOfBirthInput.style.backgroundColor = '#FFE6E6';
+    dateOfBirthInputMessage.textContent = dateOfBirthMessage;
+    dateOfBirthInputParent.appendChild(dateOfBirthInputMessage);
+  }
+});
+
+// 'Focus' event listener aimed at removing any existing 'dateOfBirthInputMessage'
+// element created when leaving blank input field
+dateOfBirthInput.addEventListener('focus', () => {
+  // Check whether a 'span' element exists at the very end of the parent element
+  if (document.getElementById('date-of-birth-input-message') !== null) {
+    // Remove element
+    dateOfBirthInputParent.removeChild(dateOfBirthInputMessage);
   }
 });
