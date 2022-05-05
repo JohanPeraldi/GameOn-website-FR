@@ -54,7 +54,8 @@ const emailInputMessage = document.createElement('span');
 // Give it an id
 emailInputMessage.setAttribute('id', 'email-input-message');
 // The message to display inside the created 'span' element
-const emailMessage = 'Veuillez entrer une adresse email valide du type x@x.x';
+const emailMessageEmpty = 'Ce champ ne peut pas être vide';
+const emailMessageInvalid = 'Veuillez entrer une adresse email valide du type x@x.x';
 // Style the message
 emailInputMessage.style.fontSize = messageFontSize;
 emailInputMessage.style.color = messageColor;
@@ -197,10 +198,15 @@ emailInput.addEventListener('blur', ($event) => {
     emailInput.style.border = inputBorderStyleValid;
     emailInput.style.backgroundColor = '#E6FFEA';
   } else {
-    console.log('Veuillez entrer une adresse email valide du type x@x.x');
     emailInput.style.border = inputBorderStyleInvalid;
     emailInput.style.backgroundColor = '#FFE6E6';
-    emailInputMessage.textContent = emailMessage;
+    if ($event.target.value === '') {
+      console.log('Le champ email ne peut pas être vide');
+      emailInputMessage.textContent = emailMessageEmpty;
+    } else {
+      console.log('Veuillez entrer une adresse email valide du type x@x.x');
+      emailInputMessage.textContent = emailMessageInvalid;
+    }
     emailInputParent.appendChild(emailInputMessage);
   }
 });
