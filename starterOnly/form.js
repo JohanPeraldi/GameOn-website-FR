@@ -96,6 +96,10 @@ const numberOfTournamentsMessage = 'Veuillez entrer un nombre entre 0 et 99 incl
 numberOfTournamentsInputMessage.style.fontSize = messageFontSize;
 numberOfTournamentsInputMessage.style.color = messageColor;
 
+/* ***************** TOURNAMENT OPTIONS ******************** */
+// "Radio buttons" input
+const radioInput = document.querySelector('.formData');
+
 
 /**
  * First name validation
@@ -291,4 +295,28 @@ numberOfTournamentsInput.addEventListener('focus', () => {
     // Remove element
     numberOfTournamentsInputParent.removeChild(numberOfTournamentsInputMessage);
   }
+});
+
+
+/**
+ * Radio buttons validation
+ */
+
+// A variable to store the validity of the radio buttons selection
+let radioInputIsValid;
+
+// When form appears, New York is checked by default, therefore:
+radioInputIsValid = document.querySelector('input[name="location"]:checked').value === 'New York'; // should return true
+console.log(`By default, New York tournament is selected: ${radioInputIsValid}`);
+
+document.body.addEventListener('change', ($event) => {
+  const tournamentLocation = $event.target.value;
+  radioInputIsValid = tournamentLocation === 'New York'
+                   || tournamentLocation === 'San Francisco'
+                   || tournamentLocation === 'Seattle'
+                   || tournamentLocation === 'Chicago'
+                   || tournamentLocation === 'Boston'
+                   || tournamentLocation === 'Portland';
+  console.log(`Option selected: ${tournamentLocation}`);
+  console.log(`Option is valid: ${radioInputIsValid}`);
 });
