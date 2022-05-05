@@ -17,8 +17,10 @@ firstNameInputMessage.setAttribute('id', 'first-name-input-message');
 const nameMessageEmpty = 'Ce champ ne peut pas être vide';
 const nameMessageShort = 'Veuillez entrer au moins deux caractères';
 // Style the message
-firstNameInputMessage.style.fontSize = '14px';
-firstNameInputMessage.style.color = 'red';
+const messageFontSize = '14px';
+const messageColor = 'red';
+firstNameInputMessage.style.fontSize = messageFontSize;
+firstNameInputMessage.style.color = messageColor;
 
 // "Nom" input
 const lastNameInput = document.getElementById('last');
@@ -32,11 +34,25 @@ const lastNameInputMessage = document.createElement('span');
 // Give it an id
 lastNameInputMessage.setAttribute('id', 'last-name-input-message');
 // Style the message
-lastNameInputMessage.style.fontSize = '14px';
-lastNameInputMessage.style.color = 'red';
+lastNameInputMessage.style.fontSize = messageFontSize;
+lastNameInputMessage.style.color = messageColor;
 
 // "Email" input
 const emailInput = document.getElementById('email');
+
+// Parent of "email" input
+const emailInputParent = emailInput.parentElement;
+
+// Create a span element that will contain a message
+// to be inserted after email element
+const emailInputMessage = document.createElement('span');
+// Give it an id
+emailInputMessage.setAttribute('id', 'email-input-message');
+// The message to display inside the created 'span' element
+const emailMessage = 'Veuillez entrer une adresse email valide du type x@x.x';
+// Style the message
+emailInputMessage.style.fontSize = messageFontSize;
+emailInputMessage.style.color = messageColor;
 
 
 /**
@@ -55,7 +71,7 @@ firstNameInput.addEventListener('blur', ($event) => {
     firstNameInput.style.border = '1px solid green';
     firstNameInput.style.backgroundColor = '#E6FFEA';
   } else {
-    firstNameInput.style.border = '1px solid red';
+    firstNameInput.style.border = '1px solid' + messageColor;
     firstNameInput.style.backgroundColor = '#FFE6E6';
     if ($event.target.value.length === 1) {
       console.log('Veuillez entrer au moins deux caractères');
@@ -98,7 +114,7 @@ lastNameInput.addEventListener('blur', ($event) => {
     lastNameInput.style.border = '1px solid green';
     lastNameInput.style.backgroundColor = '#E6FFEA';
   } else {
-    lastNameInput.style.border = '1px solid red';
+    lastNameInput.style.border = '1px solid' + messageColor;
     lastNameInput.style.backgroundColor = '#FFE6E6';
     if ($event.target.value.length === 1) {
       console.log('Veuillez entrer au moins deux caractères');
@@ -140,8 +156,20 @@ emailInput.addEventListener('blur', ($event) => {
     emailInput.style.border = '1px solid green';
     emailInput.style.backgroundColor = '#E6FFEA';
   } else {
-    console.log('Veuillez entrer une adresse email valide du type ab@cd.ef');
-    emailInput.style.border = '1px solid red';
+    console.log('Veuillez entrer une adresse email valide du type x@x.x');
+    emailInput.style.border = '1px solid' + messageColor;
     emailInput.style.backgroundColor = '#FFE6E6';
+    emailInputMessage.textContent = emailMessage;
+    emailInputParent.appendChild(emailInputMessage);
+  }
+});
+
+// 'Focus' event listener aimed at removing any existing 'emailInputMessage'
+// element created when entering an invalid email
+emailInput.addEventListener('focus', () => {
+  // Check whether a 'span' element exists at the very end of the parent element
+  if (document.getElementById('email-input-message') !== null) {
+    // Remove element
+    emailInputParent.removeChild(emailInputMessage);
   }
 });
