@@ -18,10 +18,10 @@ firstNameInputMessage.setAttribute('id', 'first-name-input-message');
 const nameMessageEmpty = 'Ce champ ne peut pas être vide';
 const nameMessageShort = 'Veuillez entrer au moins deux caractères';
 // Style the message
-const inputBorderStyle = '1px solid';
+const inputBorderStyleValid = '1px solid green';
+const inputBorderStyleInvalid = '1px solid red';
 const messageFontSize = '14px';
 const messageColor = 'red';
-const colorValid = 'green';
 firstNameInputMessage.style.fontSize = messageFontSize;
 firstNameInputMessage.style.color = messageColor;
 
@@ -77,6 +77,24 @@ const dateOfBirthMessage = 'Veuillez entrer votre date de naissance';
 dateOfBirthInputMessage.style.fontSize = messageFontSize;
 dateOfBirthInputMessage.style.color = messageColor;
 
+/* ********************* TOURNAMENTS *********************** */
+// "Number of participations in tournaments" input
+const numberOfTournamentsInput = document.getElementById('quantity');
+
+// Parent of "number of participations in tournaments" input
+const numberOfTournamentsInputParent = numberOfTournamentsInput.parentElement;
+
+// Create a span element that will contain a message
+// to be inserted after number of tournaments element
+const numberOfTournamentsInputMessage = document.createElement('span');
+// Give it an id
+numberOfTournamentsInputMessage.setAttribute('id', 'number-of-tournaments-input-message');
+// The message to display inside the created 'span' element
+const numberOfTournamentsMessage = 'Veuillez entrer un nombre entre 0 et 99 inclus';
+// Style the message
+numberOfTournamentsInputMessage.style.fontSize = messageFontSize;
+numberOfTournamentsInputMessage.style.color = messageColor;
+
 
 /**
  * First name validation
@@ -91,10 +109,10 @@ firstNameInput.addEventListener('blur', ($event) => {
   if ($event.target.value.length > 1) {
     console.log('Le champ du prénom est valide');
     firstNameIsValid = true;
-    firstNameInput.style.border = inputBorderStyle + colorValid;
+    firstNameInput.style.border = inputBorderStyleValid;
     firstNameInput.style.backgroundColor = '#E6FFEA';
   } else {
-    firstNameInput.style.border = inputBorderStyle + messageColor;
+    firstNameInput.style.border = inputBorderStyleInvalid;
     firstNameInput.style.backgroundColor = '#FFE6E6';
     if ($event.target.value.length === 1) {
       console.log('Veuillez entrer au moins deux caractères');
@@ -134,10 +152,10 @@ lastNameInput.addEventListener('blur', ($event) => {
   if ($event.target.value.length > 1) {
     console.log('Le champ du nom est valide');
     lastNameIsValid = true;
-    lastNameInput.style.border = inputBorderStyle + colorValid;
+    lastNameInput.style.border = inputBorderStyleValid;
     lastNameInput.style.backgroundColor = '#E6FFEA';
   } else {
-    lastNameInput.style.border = inputBorderStyle + messageColor;
+    lastNameInput.style.border = inputBorderStyleInvalid;
     lastNameInput.style.backgroundColor = '#FFE6E6';
     if ($event.target.value.length === 1) {
       console.log('Veuillez entrer au moins deux caractères');
@@ -176,11 +194,11 @@ const emailIsValid = (email) => {
 emailInput.addEventListener('blur', ($event) => {
   if (emailIsValid($event.target.value)) {
     console.log('Le champ email est valide');
-    emailInput.style.border = inputBorderStyle + colorValid;
+    emailInput.style.border = inputBorderStyleValid;
     emailInput.style.backgroundColor = '#E6FFEA';
   } else {
     console.log('Veuillez entrer une adresse email valide du type x@x.x');
-    emailInput.style.border = inputBorderStyle + messageColor;
+    emailInput.style.border = inputBorderStyleInvalid;
     emailInput.style.backgroundColor = '#FFE6E6';
     emailInputMessage.textContent = emailMessage;
     emailInputParent.appendChild(emailInputMessage);
@@ -212,11 +230,11 @@ dateOfBirthInput.addEventListener('blur', ($event) => {
   if ($event.target.value !== '') {
     console.log('Le champ date de naissance est valide');
     dateOfBirthIsValid = true;
-    dateOfBirthInput.style.border = inputBorderStyle + colorValid;
+    dateOfBirthInput.style.border = inputBorderStyleValid;
     dateOfBirthInput.style.backgroundColor = '#E6FFEA';
   } else {
     console.log('Le champ date de naissance est invalide');
-    dateOfBirthInput.style.border = inputBorderStyle + messageColor;
+    dateOfBirthInput.style.border = inputBorderStyleInvalid;
     dateOfBirthInput.style.backgroundColor = '#FFE6E6';
     dateOfBirthInputMessage.textContent = dateOfBirthMessage;
     dateOfBirthInputParent.appendChild(dateOfBirthInputMessage);
@@ -230,5 +248,41 @@ dateOfBirthInput.addEventListener('focus', () => {
   if (document.getElementById('date-of-birth-input-message') !== null) {
     // Remove element
     dateOfBirthInputParent.removeChild(dateOfBirthInputMessage);
+  }
+});
+
+
+/**
+ * Number of participations in tournaments validation
+ */
+
+// A variable to store the validity of the input
+let numberOfTournamentsIsValid = false;
+
+// Check that, when clicking outside "number of tournaments" input box,
+// a valid number >=0 and <=99 has been entered
+numberOfTournamentsInput.addEventListener('blur', ($event) => {
+  console.log('Number of participations in tournaments: ' + $event.target.value);
+  if ($event.target.value !== '' && $event.target.value >= 0 && $event.target.value <= 99) {
+    console.log('Le champ nombre de participations en tournois est valide');
+    numberOfTournamentsIsValid = true;
+    numberOfTournamentsInput.style.border = inputBorderStyleValid;
+    numberOfTournamentsInput.style.backgroundColor = '#E6FFEA';
+  } else {
+    console.log('Le champ nombre de participations en tournois est invalide');
+    numberOfTournamentsInput.style.border = inputBorderStyleInvalid;
+    numberOfTournamentsInput.style.backgroundColor = '#FFE6E6';
+    numberOfTournamentsInputMessage.textContent = numberOfTournamentsMessage;
+    numberOfTournamentsInputParent.appendChild(numberOfTournamentsInputMessage);
+  }
+});
+
+// 'Focus' event listener aimed at removing any existing 'numberOfTournamentsInputMessage'
+// element created when leaving blank input field or entering invalid number
+numberOfTournamentsInput.addEventListener('focus', () => {
+  // Check whether a 'span' element exists at the very end of the parent element
+  if (document.getElementById('number-of-tournaments-input-message') !== null) {
+    // Remove element
+    numberOfTournamentsInputParent.removeChild(numberOfTournamentsInputMessage);
   }
 });
