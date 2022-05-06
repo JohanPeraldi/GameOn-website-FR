@@ -97,8 +97,14 @@ numberOfTournamentsInputMessage.style.fontSize = messageFontSize;
 numberOfTournamentsInputMessage.style.color = messageColor;
 
 /* ***************** TOURNAMENT OPTIONS ******************** */
-// "Radio buttons" input
-const radioInput = document.querySelector('.formData');
+// "Radio buttons" input parent element
+const radioButtonsParent = document.getElementById('location1').parentElement;
+
+/* ******************** TERMS OF USE *********************** */
+// "Checkbox" input with id='checkbox1' (terms of use)
+const termsOfUseCheckbox = document.getElementById('checkbox1');
+// "Checkboxes" input parent element
+const checkboxesParent = document.getElementById('checkbox1').parentElement;
 
 
 /**
@@ -303,13 +309,15 @@ numberOfTournamentsInput.addEventListener('focus', () => {
  */
 
 // A variable to store the validity of the radio buttons selection
+// No need, I believe, to set it to false by default, because 'New York' is checked by default
 let radioInputIsValid;
 
-// When form appears, New York is checked by default, therefore:
-radioInputIsValid = document.querySelector('input[name="location"]:checked').value === 'New York'; // should return true
+// On page load, New York is checked by default, therefore:
+radioInputIsValid = document.querySelector('input[name="location"]:checked').value === 'New York';
+// should return true
 console.log(`By default, New York tournament is selected: ${radioInputIsValid}`);
 
-document.body.addEventListener('change', ($event) => {
+radioButtonsParent.addEventListener('change', ($event) => {
   const tournamentLocation = $event.target.value;
   radioInputIsValid = tournamentLocation === 'New York'
                    || tournamentLocation === 'San Francisco'
@@ -319,4 +327,25 @@ document.body.addEventListener('change', ($event) => {
                    || tournamentLocation === 'Portland';
   console.log(`Option selected: ${tournamentLocation}`);
   console.log(`Option is valid: ${radioInputIsValid}`);
+});
+
+
+/**
+ * Checkboxes validation
+ */
+
+// A variable to store the validity of the checkboxes selection
+// I think it is important to set this variable to false by default
+  // because we want the user to be active here: she must check the box
+  // herself to agree to the terms, the agreement box can't be
+  // checked by default.
+
+let checkboxesInputIsValid = false;
+
+// We need to verify that the input with id='checkbox1' is checked
+// to make the checkbox input valid
+termsOfUseCheckbox.addEventListener('change', ($event) => {
+  console.log($event.target.checked);
+  checkboxesInputIsValid = $event.target.checked;
+  console.log(`Terms of use have been agreed to: ${checkboxesInputIsValid}`);
 });
