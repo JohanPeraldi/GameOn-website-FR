@@ -103,8 +103,27 @@ const radioButtonsParent = document.getElementById('location1').parentElement;
 /* ******************** TERMS OF USE *********************** */
 // "Checkbox" input with id='checkbox1' (terms of use)
 const termsOfUseCheckbox = document.getElementById('checkbox1');
+
 // "Checkboxes" input parent element
 const checkboxesParent = document.getElementById('checkbox1').parentElement;
+
+// Create a paragraph element that will contain a message
+// to be inserted after checkboxes element
+const checkboxesInputMessage = document.createElement('p');
+// Give it an id
+checkboxesInputMessage.setAttribute('id', 'terms-of-use-input-message');
+// The message to display inside the created 'p' element
+const checkboxesMessage = 'Veuillez lire et accepter les conditions d\'utilisation';
+// Add the contents of the message
+checkboxesInputMessage.textContent = checkboxesMessage;
+// Style the message
+checkboxesInputMessage.style.fontSize = messageFontSize;
+checkboxesInputMessage.style.color = messageColor;
+checkboxesInputMessage.style.marginBottom = '10px';
+
+/* ****************** FORM SUBMISSION ********************* */
+// Form element
+const form = document.querySelector('form');
 
 
 /**
@@ -195,16 +214,20 @@ lastNameInput.addEventListener('focus', () => {
  * Email validation
  */
 
+// A variable to store the validity of the email address
+  let emailIsValid = false;
+
 // Check that, when clicking outside "email" input box,
 // entered email address follows x@x.x pattern
 // (white spaces not allowed, second @ character not allowed)
-const emailIsValid = (email) => {
+const emailCheckSuccess = (email) => {
   return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
 }
 
 emailInput.addEventListener('blur', ($event) => {
-  if (emailIsValid($event.target.value)) {
+  if (emailCheckSuccess($event.target.value)) {
     console.log('Le champ email est valide');
+    emailIsValid = true;
     emailInput.style.border = inputBorderStyleValid;
     emailInput.style.backgroundColor = '#E6FFEA';
   } else {
@@ -345,7 +368,43 @@ let checkboxesInputIsValid = false;
 // We need to verify that the input with id='checkbox1' is checked
 // to make the checkbox input valid
 termsOfUseCheckbox.addEventListener('change', ($event) => {
-  console.log($event.target.checked);
   checkboxesInputIsValid = $event.target.checked;
   console.log(`Terms of use have been agreed to: ${checkboxesInputIsValid}`);
+  if (checkboxesInputIsValid) {
+    checkboxesParent.removeChild(checkboxesInputMessage);
+  }
+});
+
+
+/**
+ * Validation of all fields before form submission
+ */
+
+// Check if all fields are valid
+let allFieldsAreValid = false;
+
+form.addEventListener('submit', ($event) => {
+  allFieldsAreValid = firstNameIsValid
+                   && lastNameIsValid
+                   && emailIsValid
+                   && dateOfBirthIsValid
+                   && numberOfTournamentsIsValid
+                   && radioInputIsValid
+                   && checkboxesInputIsValid;
+  if (allFieldsAreValid) {
+    console.log(`All fields are valid. Form can be submitted! ${allFieldsAreValid}`);
+  } else {
+    $event.preventDefault();
+    console.log(`Sorry, form cannot be submitted! ${allFieldsAreValid}`);
+    console.log(`First name is valid: ${firstNameIsValid}`);
+    console.log(`Last name is valid: ${lastNameIsValid}`);
+    console.log(`Email is valid: ${emailIsValid}`);
+    console.log(`DOB is valid: ${dateOfBirthIsValid}`);
+    console.log(`Nb of tourneys is valid: ${numberOfTournamentsIsValid}`);
+    console.log(`Radio input is valid: ${radioInputIsValid}`);
+    console.log(`Checkboxes input is valid: ${checkboxesInputIsValid}`);
+    if (!checkboxesInputIsValid) {
+      checkboxesParent.appendChild(checkboxesInputMessage);
+    }
+  }
 });
