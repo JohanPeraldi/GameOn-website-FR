@@ -73,7 +73,8 @@ const dateOfBirthInputMessage = document.createElement('span');
 // Give it an id
 dateOfBirthInputMessage.setAttribute('id', 'date-of-birth-input-message');
 // The message to display inside the created 'span' element
-const dateOfBirthMessage = 'Veuillez entrer votre date de naissance';
+const dateOfBirthMessageEmpty = 'Veuillez entrer votre date de naissance';
+const dateOfBirthMessageInvalid = 'Veuillez naître avant de vous inscrire';
 // Style the message
 dateOfBirthInputMessage.style.fontSize = messageFontSize;
 dateOfBirthInputMessage.style.color = messageColor;
@@ -297,20 +298,33 @@ emailInput.addEventListener('focus', () => {
 // A variable to store the validity of the input
 let dateOfBirthIsValid = false;
 
+// A variable to check whether date of birth is in the past
+let dateOfBirthIsInPast = false;
+
 // Check that, when clicking outside "date of birth" input box,
-// date of birth has been entered (and is valid? ie. not a future or too close in the past date)
+// date of birth has been entered (and is not a date in the future)
 dateOfBirthInput.addEventListener('blur', ($event) => {
-  console.log($event.target.value);
+  // console.log($event.target.value);
+  dateOfBirthIsInPast = Date.now() - Date.parse($event.target.value) > 0;
+  console.log(`Date of birth is in the past: ${dateOfBirthIsInPast}`);
   if ($event.target.value !== '') {
-    console.log('Le champ date de naissance est valide');
-    dateOfBirthIsValid = true;
-    dateOfBirthInput.style.border = inputBorderStyleValid;
-    dateOfBirthInput.style.backgroundColor = '#E6FFEA';
+    if (!dateOfBirthIsInPast) {
+      console.log('Come on! You can\'t be born in the future!');
+      dateOfBirthInput.style.border = inputBorderStyleInvalid;
+      dateOfBirthInput.style.backgroundColor = '#FFE6E6';
+      dateOfBirthInputMessage.textContent = dateOfBirthMessageInvalid;
+      dateOfBirthInputParent.appendChild(dateOfBirthInputMessage);
+    } else {
+      console.log('Le champ date de naissance est valide');
+      dateOfBirthIsValid = true;
+      dateOfBirthInput.style.border = inputBorderStyleValid;
+      dateOfBirthInput.style.backgroundColor = '#E6FFEA';
+    }
   } else {
-    console.log('Le champ date de naissance est invalide');
+    console.log('Le champ date de naissance ne peut pas être vide');
     dateOfBirthInput.style.border = inputBorderStyleInvalid;
     dateOfBirthInput.style.backgroundColor = '#FFE6E6';
-    dateOfBirthInputMessage.textContent = dateOfBirthMessage;
+    dateOfBirthInputMessage.textContent = dateOfBirthMessageEmpty;
     dateOfBirthInputParent.appendChild(dateOfBirthInputMessage);
   }
 });
@@ -496,13 +510,16 @@ form.addEventListener('submit', ($event) => {
     console.log('Date of birth is invalid!');
     dateOfBirthInput.style.border = inputBorderStyleInvalid;
     dateOfBirthInput.style.backgroundColor = '#FFE6E6';
-    // For the moment, one possible scenario:
-    // Field is empty
-    dateOfBirthInputMessage.textContent = dateOfBirthMessage;
+    // Two possible scenarii:
+    // 1) Field is empty
+    if (dateOfBirthInput.value === '') {
+      dateOfBirthInputMessage.textContent = dateOfBirthMessageEmpty;
+    }
+    // 2) Entered date is in the future
+    else if (!dateOfBirthIsInPast) {
+      dateOfBirthInputMessage.textContent = dateOfBirthMessageInvalid;
+    }
     dateOfBirthInputParent.appendChild(dateOfBirthInputMessage);
-    // A second check is needed to invalidate dates in the future
-    // and also dates in a too recent past (persons of up to a certain age)
-    // YET TO BE IMPLEMENTED!
   } else if (!numberOfTournamentsIsValid) {
     console.log('Number of tournaments is invalid!');
     numberOfTournamentsInput.style.border = inputBorderStyleInvalid;
