@@ -125,6 +125,26 @@ checkboxesInputMessage.style.marginBottom = '10px';
 // Form element
 const form = document.querySelector('form');
 
+/* ********* SUCCESSFUL FORM SUBMISSION MESSAGE *********** */
+// Create a 'p' element to hold the message to be displayed
+const successMessageElement = document.createElement('p');
+// The message to display
+const successMessage = 'Merci! Votre réservation a été reçue.';
+// Add the contents of the message
+successMessageElement.textContent = successMessage;
+// Style the message
+successMessageElement.style.backgroundColor = '#E6FFEA';
+successMessageElement.style.fontSize = '20px';
+successMessageElement.style.color = 'green';
+successMessageElement.style.padding = '20px';
+successMessageElement.style.border = inputBorderStyleValid;
+successMessageElement.style.zIndex = '1000';
+successMessageElement.style.position = 'absolute';
+successMessageElement.style.top = '50vh';
+successMessageElement.style.left = '35vw';
+successMessageElement.style.borderRadius = '10px';
+// Target the main element
+const main = document.querySelector('main');
 
 /**
  * First name validation
@@ -371,7 +391,9 @@ termsOfUseCheckbox.addEventListener('change', ($event) => {
   checkboxesInputIsValid = $event.target.checked;
   console.log(`Terms of use have been agreed to: ${checkboxesInputIsValid}`);
   if (checkboxesInputIsValid) {
-    checkboxesParent.removeChild(checkboxesInputMessage);
+    if (checkboxesParent.lastChild === checkboxesInputMessage) {
+      checkboxesParent.removeChild(checkboxesInputMessage);
+    }
   }
 });
 
@@ -393,6 +415,7 @@ form.addEventListener('submit', ($event) => {
                    && checkboxesInputIsValid;
   if (allFieldsAreValid) {
     console.log(`All fields are valid. Form can be submitted! ${allFieldsAreValid}`);
+    showSuccessMessage();
   } else {
     $event.preventDefault();
     console.log(`Sorry, form cannot be submitted! ${allFieldsAreValid}`);
@@ -408,3 +431,16 @@ form.addEventListener('submit', ($event) => {
     }
   }
 });
+
+
+/**
+ * Confirmation message after successful form submission
+ */
+
+const showSuccessMessage = () => {
+  main.appendChild(successMessageElement);
+  setTimeout(() => {
+    main.removeChild(successMessageElement);
+  }, 2000);
+  console.log('showSuccessMessage function called');
+};
