@@ -91,9 +91,10 @@ const numberOfTournamentsInputMessage = document.createElement('span');
 // Give it an id
 numberOfTournamentsInputMessage.setAttribute('id', 'number-of-tournaments-input-message');
 // The message to display inside the created 'span' element
-const numberOfTournamentsMessage = 'Veuillez entrer un nombre entre 0 et 99 inclus';
+const numberOfTournamentsMessageOutOfRange = 'Veuillez entrer un nombre entre 0 et 99 inclus';
+const numberOfTournamentsMessageEmpty = 'Ce champ ne peut pas être vide';
 // Add the message
-numberOfTournamentsInputMessage.textContent = numberOfTournamentsMessage;
+// numberOfTournamentsInputMessage.textContent = numberOfTournamentsMessage;
 // Style the message
 numberOfTournamentsInputMessage.style.fontSize = messageFontSize;
 numberOfTournamentsInputMessage.style.color = messageColor;
@@ -336,16 +337,22 @@ let numberOfTournamentsIsValid = false;
 // a valid number >=0 and <=99 has been entered
 numberOfTournamentsInput.addEventListener('blur', ($event) => {
   console.log('Number of participations in tournaments: ' + $event.target.value);
-  if ($event.target.value !== '' && $event.target.value >= 0 && $event.target.value <= 99) {
+  if ($event.target.value.length !== 0 && $event.target.value >= 0 && $event.target.value <= 99) {
     console.log('Le champ nombre de participations en tournois est valide');
     numberOfTournamentsIsValid = true;
     numberOfTournamentsInput.style.border = inputBorderStyleValid;
     numberOfTournamentsInput.style.backgroundColor = '#E6FFEA';
   } else {
-    console.log('Le champ nombre de participations en tournois est invalide');
     numberOfTournamentsInput.style.border = inputBorderStyleInvalid;
     numberOfTournamentsInput.style.backgroundColor = '#FFE6E6';
-    // numberOfTournamentsInputMessage.textContent = numberOfTournamentsMessage;
+    if ($event.target.value.length === 0) {
+      console.log('Ce champ ne peut pas être vide');
+      numberOfTournamentsInputMessage.textContent = numberOfTournamentsMessageEmpty;
+    }
+    if ($event.target.value < 0 || $event.target.value > 99) {
+      console.log('Veuillez choisir un nombre entre 0 et 99 inclus');
+      numberOfTournamentsInputMessage.textContent = numberOfTournamentsMessageOutOfRange;
+    }
     numberOfTournamentsInputParent.appendChild(numberOfTournamentsInputMessage);
   }
 });
@@ -487,9 +494,28 @@ form.addEventListener('submit', ($event) => {
     emailInputParent.appendChild(emailInputMessage);
   } else if (!dateOfBirthIsValid) {
     console.log('Date of birth is invalid!');
+    dateOfBirthInput.style.border = inputBorderStyleInvalid;
+    dateOfBirthInput.style.backgroundColor = '#FFE6E6';
+    // For the moment, one possible scenario:
+    // Field is empty
+    dateOfBirthInputMessage.textContent = dateOfBirthMessage;
     dateOfBirthInputParent.appendChild(dateOfBirthInputMessage);
+    // A second check is needed to invalidate dates in the future
+    // and also dates in a too recent past (persons of up to a certain age)
+    // YET TO BE IMPLEMENTED!
   } else if (!numberOfTournamentsIsValid) {
     console.log('Number of tournaments is invalid!');
+    numberOfTournamentsInput.style.border = inputBorderStyleInvalid;
+    numberOfTournamentsInput.style.backgroundColor = '#FFE6E6';
+    // Two possible scenarii:
+    // 1) Field is empty
+    if (numberOfTournamentsInput.value.length === 0) {
+      numberOfTournamentsInputMessage.textContent = numberOfTournamentsMessageEmpty;
+    }
+    // 2) Number falls outside allowed range
+    if (numberOfTournamentsInput.value < 0 || numberOfTournamentsInput.value > 99) {
+      numberOfTournamentsInputMessage.textContent = numberOfTournamentsMessageOutOfRange;
+    }
     numberOfTournamentsInputParent.appendChild(numberOfTournamentsInputMessage);
   } else if (!radioInputIsValid) {
     console.log('Please select an option!');
