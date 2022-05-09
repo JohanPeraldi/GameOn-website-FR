@@ -55,7 +55,7 @@ const emailInputMessage = document.createElement('span');
 emailInputMessage.setAttribute('id', 'email-input-message');
 // The message to display inside the created 'span' element
 const emailMessageEmpty = 'Ce champ ne peut pas être vide';
-const emailMessageInvalid = 'Veuillez entrer une adresse email valide du type x@x.x';
+const emailMessageInvalid = 'Veuillez entrer une adresse email valide du type xx@xxx.xx';
 // Style the message
 emailInputMessage.style.fontSize = messageFontSize;
 emailInputMessage.style.color = messageColor;
@@ -92,6 +92,8 @@ const numberOfTournamentsInputMessage = document.createElement('span');
 numberOfTournamentsInputMessage.setAttribute('id', 'number-of-tournaments-input-message');
 // The message to display inside the created 'span' element
 const numberOfTournamentsMessage = 'Veuillez entrer un nombre entre 0 et 99 inclus';
+// Add the message
+numberOfTournamentsInputMessage.textContent = numberOfTournamentsMessage;
 // Style the message
 numberOfTournamentsInputMessage.style.fontSize = messageFontSize;
 numberOfTournamentsInputMessage.style.color = messageColor;
@@ -99,6 +101,18 @@ numberOfTournamentsInputMessage.style.color = messageColor;
 /* ***************** TOURNAMENT OPTIONS ******************** */
 // "Radio buttons" input parent element
 const radioButtonsParent = document.getElementById('location1').parentElement;
+// Create a span element that will contain a message
+// to be inserted after tournament options radio buttons element
+radioButtonsInputMessage = document.createElement('span');
+// Give it an id
+radioButtonsInputMessage.setAttribute('id', 'tournament-options-input-message');
+// The message to display inside the created 'span' element
+const radioButtonsMessage = 'Veuillez choisir une option';
+// Add the contents of the message
+radioButtonsInputMessage.textContent = radioButtonsMessage;
+// Style the message
+radioButtonsInputMessage.style.fontSize = messageFontSize;
+radioButtonsInputMessage.style.color = messageColor;
 
 /* ******************** TERMS OF USE *********************** */
 // "Checkbox" input with id='checkbox1' (terms of use)
@@ -235,7 +249,7 @@ lastNameInput.addEventListener('focus', () => {
  */
 
 // A variable to store the validity of the email address
-  let emailIsValid = false;
+let emailIsValid = false;
 
 // Check that, when clicking outside "email" input box,
 // entered email address follows xx@xxx.xx pattern
@@ -257,7 +271,7 @@ emailInput.addEventListener('blur', ($event) => {
       console.log('Le champ email ne peut pas être vide');
       emailInputMessage.textContent = emailMessageEmpty;
     } else {
-      console.log('Veuillez entrer une adresse email valide du type x@x.x');
+      console.log('Veuillez entrer une adresse email valide du type xx@xxx.xx');
       emailInputMessage.textContent = emailMessageInvalid;
     }
     emailInputParent.appendChild(emailInputMessage);
@@ -331,7 +345,7 @@ numberOfTournamentsInput.addEventListener('blur', ($event) => {
     console.log('Le champ nombre de participations en tournois est invalide');
     numberOfTournamentsInput.style.border = inputBorderStyleInvalid;
     numberOfTournamentsInput.style.backgroundColor = '#FFE6E6';
-    numberOfTournamentsInputMessage.textContent = numberOfTournamentsMessage;
+    // numberOfTournamentsInputMessage.textContent = numberOfTournamentsMessage;
     numberOfTournamentsInputParent.appendChild(numberOfTournamentsInputMessage);
   }
 });
@@ -352,24 +366,24 @@ numberOfTournamentsInput.addEventListener('focus', () => {
  */
 
 // A variable to store the validity of the radio buttons selection
-// No need, I believe, to set it to false by default, because 'New York' is checked by default
-let radioInputIsValid;
-
-// On page load, New York is checked by default, therefore:
-radioInputIsValid = document.querySelector('input[name="location"]:checked').value === 'New York';
-// should return true
-console.log(`By default, New York tournament is selected: ${radioInputIsValid}`);
+let radioInputIsValid = false;
 
 radioButtonsParent.addEventListener('change', ($event) => {
   const tournamentLocation = $event.target.value;
   radioInputIsValid = tournamentLocation === 'New York'
-                   || tournamentLocation === 'San Francisco'
-                   || tournamentLocation === 'Seattle'
-                   || tournamentLocation === 'Chicago'
-                   || tournamentLocation === 'Boston'
-                   || tournamentLocation === 'Portland';
+    || tournamentLocation === 'San Francisco'
+    || tournamentLocation === 'Seattle'
+    || tournamentLocation === 'Chicago'
+    || tournamentLocation === 'Boston'
+    || tournamentLocation === 'Portland';
   console.log(`Option selected: ${tournamentLocation}`);
   console.log(`Option is valid: ${radioInputIsValid}`);
+  // Remove error message if present
+  if (radioInputIsValid) {
+    if (document.getElementById('tournament-options-input-message')) {
+      radioButtonsParent.removeChild(radioButtonsInputMessage);
+    }
+  }
 });
 
 
@@ -403,33 +417,99 @@ termsOfUseCheckbox.addEventListener('change', ($event) => {
  */
 
 // Check if all fields are valid
-let allFieldsAreValid = false;
+// let allFieldsAreValid = false;
 
 form.addEventListener('submit', ($event) => {
   $event.preventDefault();
-  allFieldsAreValid = firstNameIsValid
-                   && lastNameIsValid
-                   && emailIsValid
-                   && dateOfBirthIsValid
-                   && numberOfTournamentsIsValid
-                   && radioInputIsValid
-                   && checkboxesInputIsValid;
-  if (allFieldsAreValid) {
-    console.log(`All fields are valid. Form can be submitted! ${allFieldsAreValid}`);
-    showSuccessMessage();
-  } else {
-    console.log(`Sorry, form cannot be submitted! ${allFieldsAreValid}`);
-    console.log(`First name is valid: ${firstNameIsValid}`);
-    console.log(`Last name is valid: ${lastNameIsValid}`);
-    console.log(`Email is valid: ${emailIsValid}`);
-    console.log(`DOB is valid: ${dateOfBirthIsValid}`);
-    console.log(`Nb of tourneys is valid: ${numberOfTournamentsIsValid}`);
-    console.log(`Radio input is valid: ${radioInputIsValid}`);
-    console.log(`Checkboxes input is valid: ${checkboxesInputIsValid}`);
-    if (!checkboxesInputIsValid) {
-      checkboxesParent.appendChild(checkboxesInputMessage);
+  // allFieldsAreValid = firstNameIsValid
+  //                  && lastNameIsValid
+  //                  && emailIsValid
+  //                  && dateOfBirthIsValid
+  //                  && numberOfTournamentsIsValid
+  //                  && radioInputIsValid
+  //                  && checkboxesInputIsValid;
+  // if (allFieldsAreValid) {
+  //   console.log(`All fields are valid. Form can be submitted! ${allFieldsAreValid}`);
+  //   // showSuccessMessage();
+  // } else {
+  //   console.log(`Sorry, form cannot be submitted! ${allFieldsAreValid}`);
+  //   console.log(`First name is valid: ${firstNameIsValid}`);
+  //   console.log(`Last name is valid: ${lastNameIsValid}`);
+  //   console.log(`Email is valid: ${emailIsValid}`);
+  //   console.log(`DOB is valid: ${dateOfBirthIsValid}`);
+  //   console.log(`Nb of tourneys is valid: ${numberOfTournamentsIsValid}`);
+  //   console.log(`Radio input is valid: ${radioInputIsValid}`);
+  //   console.log(`Checkboxes input is valid: ${checkboxesInputIsValid}`);
+
+  // Check validity of input fields one by one
+  // in order to display one message at a time
+  if (!firstNameIsValid) {
+    console.log('First name is invalid!');
+    firstNameInput.style.border = inputBorderStyleInvalid;
+    firstNameInput.style.backgroundColor = '#FFE6E6';
+    // Two possible scenarii:
+    // 1) Field is empty
+    if (firstNameInput.value.length === 0) {
+      firstNameInputMessage.textContent = nameMessageEmpty;
     }
+    // 2) Input has only one character
+    if (firstNameInput.value.length === 1) {
+      firstNameInputMessage.textContent = nameMessageShort;
+    }
+    firstNameInputParent.appendChild(firstNameInputMessage);
+  } else if (!lastNameIsValid) {
+    console.log('Last name is invalid!');
+    lastNameInput.style.border = inputBorderStyleInvalid;
+    lastNameInput.style.backgroundColor = '#FFE6E6';
+    // Two possible scenarii:
+    // 1) Field is empty
+    if (lastNameInput.value.length === 0) {
+      lastNameInputMessage.textContent = nameMessageEmpty;
+    }
+    // 2) Input has only one character
+    if (lastNameInput.value.length === 1) {
+      lastNameInputMessage.textContent = nameMessageShort;
+    }
+    lastNameInputParent.appendChild(lastNameInputMessage);
+  } else if (!emailIsValid) {
+    console.log('Email is invalid!');
+    emailInput.style.border = inputBorderStyleInvalid;
+    emailInput.style.backgroundColor = '#FFE6E6';
+    // Two possible scenarii:
+    // 1) Field is empty
+    if (emailInput.value.length === 0) {
+      emailInputMessage.textContent = emailMessageEmpty;
+    }
+    // 2) Input doesn't match regex
+    if (emailCheckSuccess(emailInput.value)) {
+      lastNameInputMessage.textContent = emailMessageInvalid;
+    }
+    emailInputParent.appendChild(emailInputMessage);
+  } else if (!dateOfBirthIsValid) {
+    console.log('Date of birth is invalid!');
+    dateOfBirthInputParent.appendChild(dateOfBirthInputMessage);
+  } else if (!numberOfTournamentsIsValid) {
+    console.log('Number of tournaments is invalid!');
+    numberOfTournamentsInputParent.appendChild(numberOfTournamentsInputMessage);
+  } else if (!radioInputIsValid) {
+    console.log('Please select an option!');
+    radioButtonsParent.appendChild(radioButtonsInputMessage);
+  } else if (!checkboxesInputIsValid) {
+    console.log('Please read and agree to the terms of use!');
+    checkboxesParent.appendChild(checkboxesInputMessage);
+  } else {
+    console.log('Yeepee! All input fields are valid!');
   }
+
+  // Display error message if no radio button is selected
+  // if (!radioInputIsValid) {
+  //   radioButtonsParent.appendChild(radioButtonsInputMessage);
+  // }
+  // Display error message if "terms of use" checkbox is left unchecked
+  // if (!checkboxesInputIsValid) {
+  //   checkboxesParent.appendChild(checkboxesInputMessage);
+  // }
+// }
 });
 
 
@@ -437,10 +517,10 @@ form.addEventListener('submit', ($event) => {
  * Confirmation message after successful form submission
  */
 
-const showSuccessMessage = () => {
-  main.appendChild(successMessageElement);
-  setTimeout(() => {
-    main.removeChild(successMessageElement);
-  }, 2000);
-  console.log('showSuccessMessage function called');
-};
+// const showSuccessMessage = () => {
+//   main.appendChild(successMessageElement);
+//   setTimeout(() => {
+//     main.removeChild(successMessageElement);
+//   }, 2000);
+//   console.log('showSuccessMessage function called');
+// };
