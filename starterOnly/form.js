@@ -238,10 +238,10 @@ lastNameInput.addEventListener('focus', () => {
   let emailIsValid = false;
 
 // Check that, when clicking outside "email" input box,
-// entered email address follows x@x.x pattern
+// entered email address follows xx@xxx.xx pattern
 // (white spaces not allowed, second @ character not allowed)
 const emailCheckSuccess = (email) => {
-  return /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email);
+  return /^[^\s@]{2,}@[^\s@]{3,}\.[^\s@]{2,}$/.test(email);
 }
 
 emailInput.addEventListener('blur', ($event) => {
