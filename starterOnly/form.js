@@ -406,6 +406,7 @@ termsOfUseCheckbox.addEventListener('change', ($event) => {
 let allFieldsAreValid = false;
 
 form.addEventListener('submit', ($event) => {
+  $event.preventDefault();
   allFieldsAreValid = firstNameIsValid
                    && lastNameIsValid
                    && emailIsValid
@@ -417,7 +418,6 @@ form.addEventListener('submit', ($event) => {
     console.log(`All fields are valid. Form can be submitted! ${allFieldsAreValid}`);
     showSuccessMessage();
   } else {
-    $event.preventDefault();
     console.log(`Sorry, form cannot be submitted! ${allFieldsAreValid}`);
     console.log(`First name is valid: ${firstNameIsValid}`);
     console.log(`Last name is valid: ${lastNameIsValid}`);
