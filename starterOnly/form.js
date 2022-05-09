@@ -142,25 +142,29 @@ checkboxesInputMessage.style.marginBottom = '10px';
 const form = document.querySelector('form');
 
 /* ********* SUCCESSFUL FORM SUBMISSION MESSAGE *********** */
+// The div with the class "bground"
+const backgroundElement = document.querySelector('.bground');
+// Create a 'div' element
+const successModal = document.createElement('div');
+successModal.setAttribute('class', 'content');
+// Set its styles
+successModal.style.display = 'flex';
+successModal.style.justifyContent = 'center';
+successModal.style.alignItems = 'center';
+successModal.style.height = '90vh';
 // Create a 'p' element to hold the message to be displayed
 const successMessageElement = document.createElement('p');
 // The message to display
-const successMessage = 'Merci! Votre réservation a été reçue.';
+const successMessage = 'Merci pour votre inscription';
 // Add the contents of the message
 successMessageElement.textContent = successMessage;
 // Style the message
-successMessageElement.style.backgroundColor = '#E6FFEA';
-successMessageElement.style.fontSize = '20px';
-successMessageElement.style.color = 'green';
-successMessageElement.style.padding = '20px';
-successMessageElement.style.border = inputBorderStyleValid;
-successMessageElement.style.zIndex = '1000';
-successMessageElement.style.position = 'absolute';
-successMessageElement.style.top = '50vh';
-successMessageElement.style.left = '35vw';
-successMessageElement.style.borderRadius = '10px';
-// Target the main element
-const main = document.querySelector('main');
+successMessageElement.style.fontSize = '32px';
+successMessageElement.style.textAlign = 'center';
+successMessageElement.style.lineHeight = '1.6';
+successMessageElement.style.padding = '24px';
+// Insert the paragraph inside the div
+successModal.appendChild(successMessageElement);
 
 /**
  * First name validation
@@ -542,6 +546,7 @@ form.addEventListener('submit', ($event) => {
     checkboxesParent.appendChild(checkboxesInputMessage);
   } else {
     console.log('Yeepee! All input fields are valid!');
+    replaceFormContent();
   }
 
   // Display error message if no radio button is selected
@@ -560,10 +565,11 @@ form.addEventListener('submit', ($event) => {
  * Confirmation message after successful form submission
  */
 
-// const showSuccessMessage = () => {
-//   main.appendChild(successMessageElement);
-//   setTimeout(() => {
-//     main.removeChild(successMessageElement);
-//   }, 2000);
-//   console.log('showSuccessMessage function called');
-// };
+// Form content DOM element
+const formContent = document.querySelector('.content');
+
+// Replace form content with success message
+const replaceFormContent = () => {
+  formContent.style.display = 'none';
+  backgroundElement.appendChild(successModal);
+};
