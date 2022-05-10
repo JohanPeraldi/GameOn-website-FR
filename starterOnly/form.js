@@ -11,37 +11,73 @@ class Input {
     this.messageElement = messageElement;
     this.isValid = isValid;
   }
+
   validate() {
     console.log('Entered validate() method');
     this.element.addEventListener('input', ($event) => {
-      if (this.regex.test($event.target.value)) {
-        this.isValid = true;
-        this.element.style.border = inputBorderStyleValid;
-        this.element.style.backgroundColor = '#E6FFEA';
-        this.parentElement.removeChild(this.messageElement);
+      // Check whether there is a regex for current input
+      if (this.regex) {
+        console.log(`${this.type} type input validity uses regex`);
+        if (this.regex.test($event.target.value)) {
+          this.isValid = true;
+          this.isValid === true ? console.log(`${this.element} is valid`) : console.log(`${this.element} is invalid`);
+          this.element.style.border = inputBorderStyleValid;
+          this.element.style.backgroundColor = '#E6FFEA';
+          this.parentElement.removeChild(this.messageElement);
+        } else {
+          this.element.style.border = inputBorderStyleInvalid;
+          this.element.style.backgroundColor = '#FFE6E6';
+          // Code below for empty fields
+          if ($event.target.value.length === 0) {
+            console.log('Ce champ ne peut pas être vide');
+            this.messageElement.textContent = messageEmpty;
+          }
+          // Code below only for names
+          if (this.type === 'text') {
+            if ($event.target.value.length === 1) {
+              console.log('Veuillez entrer au moins deux caractères');
+              this.messageElement.textContent = nameMessageShort;
+            }
+          }
+          // Code below only for email
+          if (this.type === 'email') {
+            if ($event.target.value !== '') {
+              console.log('Veuillez entrer une adresse email valide du type xx@xxx.xx');
+              this.messageElement.textContent = emailMessageInvalid;
+            }
+          }
+          this.parentElement.appendChild(this.messageElement);
+        }
       } else {
-        this.element.style.border = inputBorderStyleInvalid;
-        this.element.style.backgroundColor = '#FFE6E6';
-        // Code below for empty fields
-        if ($event.target.value.length === 0) {
-          console.log('Ce champ ne peut pas être vide');
-          this.messageElement.textContent = messageEmpty;
-        }
-        // Code below only for names
-        if (this.type === 'text') {
-          if ($event.target.value.length === 1) {
-            console.log('Veuillez entrer au moins deux caractères');
-            this.messageElement.textContent = nameMessageShort;
-          }
-        }
-        // Code below only for email
-        if (this.type === 'email') {
+        console.log(`${this.type} type input validity doesn't use regex`);
+        // For inputs that don't use a regex for validation, i.e. date of birth
+        // Code below only for date of birth
+        if (this.type === 'date') {
+          console.log('Checking DOB validity...');
+          dateOfBirthIsInPast = Date.now() - Date.parse($event.target.value) > 0;
+          console.log(`Date of birth is in the past: ${dateOfBirthIsInPast}`);
           if ($event.target.value !== '') {
-            console.log('Veuillez entrer une adresse email valide du type xx@xxx.xx');
-            this.messageElement.textContent = emailMessageInvalid;
+            if (!dateOfBirthIsInPast) {
+              console.log('Come on! You can\'t be born in the future!');
+              dateOfBirthElement.style.border = inputBorderStyleInvalid;
+              dateOfBirthElement.style.backgroundColor = '#FFE6E6';
+              dateOfBirthMessageElement.textContent = dateOfBirthMessageInvalid;
+              dateOfBirthParentElement.appendChild(dateOfBirthMessageElement);
+            } else {
+              console.log('Le champ date de naissance est valide');
+              dateOfBirthIsValid = true;
+              dateOfBirthElement.style.border = inputBorderStyleValid;
+              dateOfBirthElement.style.backgroundColor = '#E6FFEA';
+              dateOfBirthParentElement.removeChild(dateOfBirthMessageElement);
+            }
+          } else {
+            console.log('Le champ date de naissance ne peut pas être vide');
+            dateOfBirthElement.style.border = inputBorderStyleInvalid;
+            dateOfBirthElement.style.backgroundColor = '#FFE6E6';
+            dateOfBirthMessageElement.textContent = dateOfBirthMessageEmpty;
+            dateOfBirthParentElement.appendChild(dateOfBirthMessageElement);
           }
         }
-        this.parentElement.appendChild(this.messageElement);
       }
     });
   }
@@ -64,6 +100,10 @@ const messageEmpty = 'Ce champ ne peut pas être vide';
 const nameMessageShort = 'Veuillez entrer au moins deux caractères';
 // The alternate email message to display when email input field is not empty but invalid
 const emailMessageInvalid = 'Veuillez entrer une adresse email valide du type xx@xxx.xx';
+// Message displayed when DOB field is left empty
+const dateOfBirthMessageEmpty = 'Veuillez entrer votre date de naissance';
+// Message displayed when DOB entered is a future date
+const dateOfBirthMessageInvalid = 'Veuillez naître avant de vous inscrire';
 // Messages styles
 const inputBorderStyleValid = '1px solid green';
 const inputBorderStyleInvalid = '1px solid red';
@@ -95,7 +135,7 @@ const firstNameParentElement = firstNameElement.parentElement; // Repeated code:
 // to be inserted after input element
 const firstNameMessageElement = document.createElement('span'); // Repeated code: REFACTOR!
 // Give it an id
-// firstNameElementMessage.setAttribute('id', 'first-name-input-message');
+// firstNameMessageElement.setAttribute('id', 'first-name-input-message');
 // Style the message
 firstNameMessageElement.style.fontSize = messageFontSize; // Repeated code: REFACTOR!
 firstNameMessageElement.style.color = messageColor; // Repeated code: REFACTOR!
@@ -127,29 +167,26 @@ const emailParentElement = emailElement.parentElement; // Repeated code: REFACTO
 // to be inserted after email element
 const emailMessageElement = document.createElement('span'); // Repeated code: REFACTOR!
 // Give it an id
-// emailInputMessage.setAttribute('id', 'email-input-message');
+// emailMessageElement.setAttribute('id', 'email-input-message');
 // Style the message
 emailMessageElement.style.fontSize = messageFontSize; // Repeated code: REFACTOR!
 emailMessageElement.style.color = messageColor; // Repeated code: REFACTOR!
 
 /* ******************* DATE OF BIRTH ********************** */
 // "Date of birth" input
-const dateOfBirthInput = document.getElementById('birthdate');
+const dateOfBirthElement = document.getElementById('birthdate'); // Repeated code: REFACTOR!
 
 // Parent of "date of birth" input
-const dateOfBirthInputParent = dateOfBirthInput.parentElement;
+const dateOfBirthParentElement = dateOfBirthElement.parentElement; // Repeated code: REFACTOR!
 
 // Create a span element that will contain a message
 // to be inserted after date of birth element
-const dateOfBirthInputMessage = document.createElement('span');
+const dateOfBirthMessageElement = document.createElement('span'); // Repeated code: REFACTOR!
 // Give it an id
-dateOfBirthInputMessage.setAttribute('id', 'date-of-birth-input-message');
-// The message to display inside the created 'span' element
-const dateOfBirthMessageEmpty = 'Veuillez entrer votre date de naissance';
-const dateOfBirthMessageInvalid = 'Veuillez naître avant de vous inscrire';
+// dateOfBirthMessageElement.setAttribute('id', 'date-of-birth-input-message');
 // Style the message
-dateOfBirthInputMessage.style.fontSize = messageFontSize;
-dateOfBirthInputMessage.style.color = messageColor;
+dateOfBirthMessageElement.style.fontSize = messageFontSize; // Repeated code: REFACTOR!
+dateOfBirthMessageElement.style.color = messageColor; // Repeated code: REFACTOR!
 
 /* ********************* TOURNAMENTS *********************** */
 // "Number of participations in tournaments" input
@@ -282,61 +319,19 @@ let emailIsValid = false;
 const emailInput = new Input(emailType, emailElement, emailParentElement, emailRegex, emailMessageElement, emailIsValid);
 emailInput.validate(); // Repeated code: REFACTOR!
 
-/*******************************************************************************/
-
-  /**
-   * END REFACTOR
-   */
+// DATE OF BIRTH VALIDATION
+let dateOfBirthIsValid = false;
+let dateOfBirthIsInPast = false;
+const dateOfBirthInput = new Input(dateOfBirthType, dateOfBirthElement, dateOfBirthParentElement, null, dateOfBirthMessageElement, dateOfBirthIsValid);
+dateOfBirthInput.validate(); // Repeated code: REFACTOR!
 
 /*******************************************************************************/
 
 /**
- * Date of birth validation
+ * END REFACTOR
  */
 
-// A variable to store the validity of the input
-let dateOfBirthIsValid = false;
-
-// A variable to check whether date of birth is in the past
-let dateOfBirthIsInPast = false;
-
-// Check that, when clicking outside "date of birth" input box,
-// date of birth has been entered (and is not a date in the future)
-dateOfBirthInput.addEventListener('blur', ($event) => {
-  // console.log($event.target.value);
-  dateOfBirthIsInPast = Date.now() - Date.parse($event.target.value) > 0;
-  console.log(`Date of birth is in the past: ${dateOfBirthIsInPast}`);
-  if ($event.target.value !== '') {
-    if (!dateOfBirthIsInPast) {
-      console.log('Come on! You can\'t be born in the future!');
-      dateOfBirthInput.style.border = inputBorderStyleInvalid;
-      dateOfBirthInput.style.backgroundColor = '#FFE6E6';
-      dateOfBirthInputMessage.textContent = dateOfBirthMessageInvalid;
-      dateOfBirthInputParent.appendChild(dateOfBirthInputMessage);
-    } else {
-      console.log('Le champ date de naissance est valide');
-      dateOfBirthIsValid = true;
-      dateOfBirthInput.style.border = inputBorderStyleValid;
-      dateOfBirthInput.style.backgroundColor = '#E6FFEA';
-    }
-  } else {
-    console.log('Le champ date de naissance ne peut pas être vide');
-    dateOfBirthInput.style.border = inputBorderStyleInvalid;
-    dateOfBirthInput.style.backgroundColor = '#FFE6E6';
-    dateOfBirthInputMessage.textContent = dateOfBirthMessageEmpty;
-    dateOfBirthInputParent.appendChild(dateOfBirthInputMessage);
-  }
-});
-
-// 'Focus' event listener aimed at removing any existing 'dateOfBirthInputMessage'
-// element created when leaving blank input field
-dateOfBirthInput.addEventListener('focus', () => {
-  // Check whether a 'span' element exists at the very end of the parent element
-  if (document.getElementById('date-of-birth-input-message') !== null) {
-    // Remove element
-    dateOfBirthInputParent.removeChild(dateOfBirthInputMessage);
-  }
-});
+/*******************************************************************************/
 
 
 /**
