@@ -3,27 +3,32 @@
  */
 
 class Input {
-  constructor(type, element, parentElement, regex, messageElement, isValid) {
+  constructor(type, element, parentElement, regex, messageElement, messageElementId, isValid) {
     this.type = type;
     this.element = element;
     this.parentElement = parentElement;
     this.regex = regex;
     this.messageElement = messageElement;
+    this.messageElementId = messageElementId;
     this.isValid = isValid;
   }
 
   validate() {
-    console.log('Entered validate() method');
+    console.log(`Entered validate() method for ${this.type}`);
     this.element.addEventListener('input', ($event) => {
       // Check whether there is a regex for current input
       if (this.regex) {
         console.log(`${this.type} type input validity uses regex`);
+        console.log(`Entered: ${$event.target.value}`);
         if (this.regex.test($event.target.value)) {
           this.isValid = true;
-          this.isValid === true ? console.log(`${this.element} is valid`) : console.log(`${this.element} is invalid`);
+          this.isValid === true ? console.log(`${this.type} is valid`) : console.log(`${this.type} is invalid`);
           this.element.style.border = inputBorderStyleValid;
           this.element.style.backgroundColor = '#E6FFEA';
-          this.parentElement.removeChild(this.messageElement);
+          console.log(this.messageElement);
+          if (document.getElementById(this.messageElementId)) {
+            this.parentElement.removeChild(this.messageElement);
+          }
         } else {
           this.element.style.border = inputBorderStyleInvalid;
           this.element.style.backgroundColor = '#FFE6E6';
@@ -45,6 +50,10 @@ class Input {
               console.log('Veuillez entrer une adresse email valide du type xx@xxx.xx');
               this.messageElement.textContent = emailMessageInvalid;
             }
+          }
+          // Code below only for number of tournaments
+          if (this.type === 'number') {
+            this.messageElement.textContent = numberOfTournamentsMessage;
           }
           this.parentElement.appendChild(this.messageElement);
         }
@@ -68,6 +77,7 @@ class Input {
               dateOfBirthIsValid = true;
               dateOfBirthElement.style.border = inputBorderStyleValid;
               dateOfBirthElement.style.backgroundColor = '#E6FFEA';
+              console.log(dateOfBirthMessageElement);
               dateOfBirthParentElement.removeChild(dateOfBirthMessageElement);
             }
           } else {
@@ -94,6 +104,14 @@ const dateOfBirthType = 'date';
 const numberOfTournamentsType = 'number';
 const radioButtonsType = 'radio';
 const termsOfUseType = 'checkbox';
+// Message elements' ids
+const firstNameMessageId = 'first-name-message';
+const lastNameMessageId = 'last-name-message';
+const emailMessageId = 'email-message';
+const dateOfBirthMessageId = 'dob-message';
+const numberOfTournamentsMessageId = 'number-of-tournaments-message';
+const tournamentOptionsMessageId = 'tournament-options-message';
+const termsOfUseMessageId = 'terms-of-use-message';
 // Message displayed when a required field is left empty
 const messageEmpty = 'Ce champ ne peut pas être vide';
 // Message displayed after first & last name inputs if under 2 characters in length
@@ -104,6 +122,8 @@ const emailMessageInvalid = 'Veuillez entrer une adresse email valide du type xx
 const dateOfBirthMessageEmpty = 'Veuillez entrer votre date de naissance';
 // Message displayed when DOB entered is a future date
 const dateOfBirthMessageInvalid = 'Veuillez naître avant de vous inscrire';
+// Message displayed when entered number is out of allowed range
+const numberOfTournamentsMessage = 'Veuillez entrer un nombre entre 0 et 99 inclus';
 // Messages styles
 const inputBorderStyleValid = '1px solid green';
 const inputBorderStyleInvalid = '1px solid red';
@@ -118,6 +138,8 @@ const messageColor = 'red';
 const nameRegex = /^\S{2,}$/;
 // Email validation
 const emailRegex = /^[^\s@]{2,}@[^\s@]{3,}\.[^\s@]{2,}$/;
+// Number of tournaments validation
+const numberOfTournamentsRegex = /^\d{1,2}$/;
 
 
 /**
@@ -135,7 +157,7 @@ const firstNameParentElement = firstNameElement.parentElement; // Repeated code:
 // to be inserted after input element
 const firstNameMessageElement = document.createElement('span'); // Repeated code: REFACTOR!
 // Give it an id
-// firstNameMessageElement.setAttribute('id', 'first-name-input-message');
+firstNameMessageElement.setAttribute('id', firstNameMessageId);
 // Style the message
 firstNameMessageElement.style.fontSize = messageFontSize; // Repeated code: REFACTOR!
 firstNameMessageElement.style.color = messageColor; // Repeated code: REFACTOR!
@@ -151,7 +173,7 @@ const lastNameParentElement = lastNameElement.parentElement; // Repeated code: R
 // to be inserted after input element
 const lastNameMessageElement = document.createElement('span'); // Repeated code: REFACTOR!
 // Give it an id
-// lastNameMessageElement.setAttribute('id', 'last-name-input-message');
+lastNameMessageElement.setAttribute('id', lastNameMessageId);
 // Style the message
 lastNameMessageElement.style.fontSize = messageFontSize; // Repeated code: REFACTOR!
 lastNameMessageElement.style.color = messageColor; // Repeated code: REFACTOR!
@@ -167,7 +189,7 @@ const emailParentElement = emailElement.parentElement; // Repeated code: REFACTO
 // to be inserted after email element
 const emailMessageElement = document.createElement('span'); // Repeated code: REFACTOR!
 // Give it an id
-// emailMessageElement.setAttribute('id', 'email-input-message');
+emailMessageElement.setAttribute('id', emailMessageId);
 // Style the message
 emailMessageElement.style.fontSize = messageFontSize; // Repeated code: REFACTOR!
 emailMessageElement.style.color = messageColor; // Repeated code: REFACTOR!
@@ -183,31 +205,28 @@ const dateOfBirthParentElement = dateOfBirthElement.parentElement; // Repeated c
 // to be inserted after date of birth element
 const dateOfBirthMessageElement = document.createElement('span'); // Repeated code: REFACTOR!
 // Give it an id
-// dateOfBirthMessageElement.setAttribute('id', 'date-of-birth-input-message');
+dateOfBirthMessageElement.setAttribute('id', dateOfBirthMessageId);
 // Style the message
 dateOfBirthMessageElement.style.fontSize = messageFontSize; // Repeated code: REFACTOR!
 dateOfBirthMessageElement.style.color = messageColor; // Repeated code: REFACTOR!
 
 /* ********************* TOURNAMENTS *********************** */
-// "Number of participations in tournaments" input
-const numberOfTournamentsInput = document.getElementById('quantity');
+// "Number of tournaments" input
+const numberOfTournamentsElement = document.getElementById('quantity'); // Repeated code: REFACTOR!
 
-// Parent of "number of participations in tournaments" input
-const numberOfTournamentsInputParent = numberOfTournamentsInput.parentElement;
+// Parent of "number of tournaments" input
+const numberOfTournamentsParentElement = numberOfTournamentsElement.parentElement; // Repeated code: REFACTOR!
 
 // Create a span element that will contain a message
 // to be inserted after number of tournaments element
-const numberOfTournamentsInputMessage = document.createElement('span');
+const numberOfTournamentsMessageElement = document.createElement('span'); // Repeated code: REFACTOR!
 // Give it an id
-numberOfTournamentsInputMessage.setAttribute('id', 'number-of-tournaments-input-message');
-// The message to display inside the created 'span' element
-const numberOfTournamentsMessageOutOfRange = 'Veuillez entrer un nombre entre 0 et 99 inclus';
-const numberOfTournamentsMessageEmpty = 'Ce champ ne peut pas être vide';
+numberOfTournamentsMessageElement.setAttribute('id', numberOfTournamentsMessageId);
 // Add the message
 // numberOfTournamentsInputMessage.textContent = numberOfTournamentsMessage;
 // Style the message
-numberOfTournamentsInputMessage.style.fontSize = messageFontSize;
-numberOfTournamentsInputMessage.style.color = messageColor;
+numberOfTournamentsMessageElement.style.fontSize = messageFontSize; // Repeated code: REFACTOR!
+numberOfTournamentsMessageElement.style.color = messageColor; // Repeated code: REFACTOR!
 
 /* ***************** TOURNAMENT OPTIONS ******************** */
 // "Radio buttons" input parent element
@@ -216,7 +235,7 @@ const radioButtonsParent = document.getElementById('location1').parentElement;
 // to be inserted after tournament options radio buttons element
 const radioButtonsInputMessage = document.createElement('span');
 // Give it an id
-radioButtonsInputMessage.setAttribute('id', 'tournament-options-input-message');
+radioButtonsInputMessage.setAttribute('id', tournamentOptionsMessageId);
 // The message to display inside the created 'span' element
 const radioButtonsMessage = 'Veuillez choisir une option';
 // Add the contents of the message
@@ -236,7 +255,7 @@ const checkboxesParent = document.getElementById('checkbox1').parentElement;
 // to be inserted after checkboxes element
 const checkboxesInputMessage = document.createElement('p');
 // Give it an id
-checkboxesInputMessage.setAttribute('id', 'terms-of-use-input-message');
+checkboxesInputMessage.setAttribute('id', termsOfUseMessageId);
 // The message to display inside the created 'p' element
 const checkboxesMessage = 'Veuillez lire et accepter les conditions d\'utilisation';
 // Add the contents of the message
@@ -306,24 +325,30 @@ closeButton.addEventListener('click', () => {
 
 // FIRST NAME VALIDATION
 let firstNameIsValid = false;
-const firstNameInput = new Input(nameType, firstNameElement, firstNameParentElement, nameRegex, firstNameMessageElement, firstNameIsValid);
+const firstNameInput = new Input(nameType, firstNameElement, firstNameParentElement, nameRegex, firstNameMessageElement, firstNameMessageId, firstNameIsValid);
 firstNameInput.validate(); // Repeated code: REFACTOR!
 
 // LAST NAME VALIDATION
 let lastNameIsValid = false;
-const lastNameInput = new Input(nameType, lastNameElement, lastNameParentElement, nameRegex, lastNameMessageElement, lastNameIsValid);
+const lastNameInput = new Input(nameType, lastNameElement, lastNameParentElement, nameRegex, lastNameMessageElement, lastNameMessageId, lastNameIsValid);
 lastNameInput.validate(); // Repeated code: REFACTOR!
 
 // EMAIL VALIDATION
 let emailIsValid = false;
-const emailInput = new Input(emailType, emailElement, emailParentElement, emailRegex, emailMessageElement, emailIsValid);
+const emailInput = new Input(emailType, emailElement, emailParentElement, emailRegex, emailMessageElement, emailMessageId, emailIsValid);
 emailInput.validate(); // Repeated code: REFACTOR!
 
 // DATE OF BIRTH VALIDATION
 let dateOfBirthIsValid = false;
 let dateOfBirthIsInPast = false;
-const dateOfBirthInput = new Input(dateOfBirthType, dateOfBirthElement, dateOfBirthParentElement, null, dateOfBirthMessageElement, dateOfBirthIsValid);
+const dateOfBirthInput = new Input(dateOfBirthType, dateOfBirthElement, dateOfBirthParentElement, null, dateOfBirthMessageElement, dateOfBirthMessageId, dateOfBirthIsValid);
 dateOfBirthInput.validate(); // Repeated code: REFACTOR!
+
+// NUMBER OF TOURNAMENTS VALIDATION
+let numberOfTournamentsIsValid = false;
+const numberOfTournamentsInput = new Input(numberOfTournamentsType, numberOfTournamentsElement, numberOfTournamentsParentElement, numberOfTournamentsRegex, numberOfTournamentsMessageElement, numberOfTournamentsMessageId, numberOfTournamentsIsValid);
+numberOfTournamentsInput.validate(); // Repeated code: REFACTOR!
+
 
 /*******************************************************************************/
 
@@ -332,48 +357,6 @@ dateOfBirthInput.validate(); // Repeated code: REFACTOR!
  */
 
 /*******************************************************************************/
-
-
-/**
- * Number of participations in tournaments validation
- */
-
-// A variable to store the validity of the input
-let numberOfTournamentsIsValid = false;
-
-// Check that, when clicking outside "number of tournaments" input box,
-// a valid number >=0 and <=99 has been entered
-numberOfTournamentsInput.addEventListener('blur', ($event) => {
-  console.log('Number of participations in tournaments: ' + $event.target.value);
-  if ($event.target.value.length !== 0 && $event.target.value >= 0 && $event.target.value <= 99) {
-    console.log('Le champ nombre de participations en tournois est valide');
-    numberOfTournamentsIsValid = true;
-    numberOfTournamentsInput.style.border = inputBorderStyleValid;
-    numberOfTournamentsInput.style.backgroundColor = '#E6FFEA';
-  } else {
-    numberOfTournamentsInput.style.border = inputBorderStyleInvalid;
-    numberOfTournamentsInput.style.backgroundColor = '#FFE6E6';
-    if ($event.target.value.length === 0) {
-      console.log('Ce champ ne peut pas être vide');
-      numberOfTournamentsInputMessage.textContent = numberOfTournamentsMessageEmpty;
-    }
-    if ($event.target.value < 0 || $event.target.value > 99) {
-      console.log('Veuillez choisir un nombre entre 0 et 99 inclus');
-      numberOfTournamentsInputMessage.textContent = numberOfTournamentsMessageOutOfRange;
-    }
-    numberOfTournamentsInputParent.appendChild(numberOfTournamentsInputMessage);
-  }
-});
-
-// 'Focus' event listener aimed at removing any existing 'numberOfTournamentsInputMessage'
-// element created when leaving blank input field or entering invalid number
-numberOfTournamentsInput.addEventListener('focus', () => {
-  // Check whether a 'span' element exists at the very end of the parent element
-  if (document.getElementById('number-of-tournaments-input-message') !== null) {
-    // Remove element
-    numberOfTournamentsInputParent.removeChild(numberOfTournamentsInputMessage);
-  }
-});
 
 
 /**
