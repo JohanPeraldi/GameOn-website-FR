@@ -3,7 +3,8 @@
  */
 
 class Input {
-  constructor(element, parentElement, regex, messageElement, isValid) {
+  constructor(type, element, parentElement, regex, messageElement, isValid) {
+    this.type = type;
     this.element = element;
     this.parentElement = parentElement;
     this.regex = regex;
@@ -21,12 +22,24 @@ class Input {
       } else {
         this.element.style.border = inputBorderStyleInvalid;
         this.element.style.backgroundColor = '#FFE6E6';
-        if ($event.target.value.length === 1) {
-          console.log('Veuillez entrer au moins deux caractères');
-          this.messageElement.textContent = nameMessageShort;
-        } else {
-          console.log('Le champ prénom ne peut pas être vide');
+        // Code below for empty fields
+        if ($event.target.value.length === 0) {
+          console.log('Ce champ ne peut pas être vide');
           this.messageElement.textContent = messageEmpty;
+        }
+        // Code below only for names
+        if (this.type === 'text') {
+          if ($event.target.value.length === 1) {
+            console.log('Veuillez entrer au moins deux caractères');
+            this.messageElement.textContent = nameMessageShort;
+          }
+        }
+        // Code below only for email
+        if (this.type === 'email') {
+          if ($event.target.value !== '') {
+            console.log('Veuillez entrer une adresse email valide du type xx@xxx.xx');
+            this.messageElement.textContent = emailMessageInvalid;
+          }
         }
         this.parentElement.appendChild(this.messageElement);
       }
@@ -38,10 +51,19 @@ class Input {
  * VARIABLES
  */
 
+// Input types
+const nameType = 'text';
+const emailType = 'email';
+const dateOfBirthType = 'date';
+const numberOfTournamentsType = 'number';
+const radioButtonsType = 'radio';
+const termsOfUseType = 'checkbox';
 // Message displayed when a required field is left empty
 const messageEmpty = 'Ce champ ne peut pas être vide';
 // Message displayed after first & last name inputs if under 2 characters in length
 const nameMessageShort = 'Veuillez entrer au moins deux caractères';
+// The alternate email message to display when email input field is not empty but invalid
+const emailMessageInvalid = 'Veuillez entrer une adresse email valide du type xx@xxx.xx';
 // Messages styles
 const inputBorderStyleValid = '1px solid green';
 const inputBorderStyleInvalid = '1px solid red';
@@ -54,6 +76,8 @@ const messageColor = 'red';
 
 // First & last name validation
 const nameRegex = /^\S{2,}$/;
+// Email validation
+const emailRegex = /^[^\s@]{2,}@[^\s@]{3,}\.[^\s@]{2,}$/;
 
 
 /**
@@ -62,14 +86,14 @@ const nameRegex = /^\S{2,}$/;
 
 /* ********************* FIRST NAME ************************ */
 // "Prénom" input
-const firstNameElement = document.getElementById('first');
+const firstNameElement = document.getElementById('first'); // Repeated code: REFACTOR!
 
 // Parent of "prénom" input
-const firstNameParentElement = firstNameElement.parentElement;
+const firstNameParentElement = firstNameElement.parentElement; // Repeated code: REFACTOR!
 
 // Create a span element that will contain a message
 // to be inserted after input element
-const firstNameMessageElement = document.createElement('span');
+const firstNameMessageElement = document.createElement('span'); // Repeated code: REFACTOR!
 // Give it an id
 // firstNameElementMessage.setAttribute('id', 'first-name-input-message');
 // Style the message
@@ -78,14 +102,14 @@ firstNameMessageElement.style.color = messageColor; // Repeated code: REFACTOR!
 
 /* ********************* LAST NAME ************************ */
 // "Nom" input
-const lastNameElement = document.getElementById('last');
+const lastNameElement = document.getElementById('last'); // Repeated code: REFACTOR!
 
 // Parent of "nom" input
-const lastNameParentElement = lastNameElement.parentElement;
+const lastNameParentElement = lastNameElement.parentElement; // Repeated code: REFACTOR!
 
 // Create a span element that will contain a message
 // to be inserted after input element
-const lastNameMessageElement = document.createElement('span');
+const lastNameMessageElement = document.createElement('span'); // Repeated code: REFACTOR!
 // Give it an id
 // lastNameMessageElement.setAttribute('id', 'last-name-input-message');
 // Style the message
@@ -94,22 +118,19 @@ lastNameMessageElement.style.color = messageColor; // Repeated code: REFACTOR!
 
 /* *********************** EMAIL ************************** */
 // "Email" input
-const emailInput = document.getElementById('email');
+const emailElement = document.getElementById('email'); // Repeated code: REFACTOR!
 
 // Parent of "email" input
-const emailInputParent = emailInput.parentElement;
+const emailParentElement = emailElement.parentElement; // Repeated code: REFACTOR!
 
 // Create a span element that will contain a message
 // to be inserted after email element
-const emailInputMessage = document.createElement('span');
+const emailMessageElement = document.createElement('span'); // Repeated code: REFACTOR!
 // Give it an id
-emailInputMessage.setAttribute('id', 'email-input-message');
-// The message to display inside the created 'span' element
-const emailMessageEmpty = 'Ce champ ne peut pas être vide';
-const emailMessageInvalid = 'Veuillez entrer une adresse email valide du type xx@xxx.xx';
+// emailInputMessage.setAttribute('id', 'email-input-message');
 // Style the message
-emailInputMessage.style.fontSize = messageFontSize;
-emailInputMessage.style.color = messageColor;
+emailMessageElement.style.fontSize = messageFontSize; // Repeated code: REFACTOR!
+emailMessageElement.style.color = messageColor; // Repeated code: REFACTOR!
 
 /* ******************* DATE OF BIRTH ********************** */
 // "Date of birth" input
@@ -238,148 +259,36 @@ closeButton.addEventListener('click', () => {
   backgroundElement.style.display = 'none';
 });
 
+/*******************************************************************************/
+
 /**
- * First name validation
+ * START REFACTOR
  */
 
 /*******************************************************************************/
-// USE CLASS INPUT
+
 // FIRST NAME VALIDATION
 let firstNameIsValid = false;
-const firstNameInput = new Input(firstNameElement, firstNameParentElement, nameRegex, firstNameMessageElement, firstNameIsValid);
-firstNameInput.validate();
+const firstNameInput = new Input(nameType, firstNameElement, firstNameParentElement, nameRegex, firstNameMessageElement, firstNameIsValid);
+firstNameInput.validate(); // Repeated code: REFACTOR!
 
 // LAST NAME VALIDATION
 let lastNameIsValid = false;
-const lastNameInput = new Input(lastNameElement, lastNameParentElement, nameRegex, lastNameMessageElement, lastNameIsValid);
-lastNameInput.validate();
+const lastNameInput = new Input(nameType, lastNameElement, lastNameParentElement, nameRegex, lastNameMessageElement, lastNameIsValid);
+lastNameInput.validate(); // Repeated code: REFACTOR!
+
+// EMAIL VALIDATION
+let emailIsValid = false;
+const emailInput = new Input(emailType, emailElement, emailParentElement, emailRegex, emailMessageElement, emailIsValid);
+emailInput.validate(); // Repeated code: REFACTOR!
 
 /*******************************************************************************/
 
-// A variable to store the validity of the input
-// let firstNameIsValid = false;
+  /**
+   * END REFACTOR
+   */
 
-// Check that, when clicking outside "first name" input box,
-// entered first name has at least two characters
-// firstNameInput.addEventListener('blur', ($event) => {
-//   if ($event.target.value.length > 1) {
-//     console.log('Le champ du prénom est valide');
-//     firstNameIsValid = true;
-//     firstNameInput.style.border = inputBorderStyleValid;
-//     firstNameInput.style.backgroundColor = '#E6FFEA';
-//   } else {
-//     firstNameInput.style.border = inputBorderStyleInvalid;
-//     firstNameInput.style.backgroundColor = '#FFE6E6';
-//     if ($event.target.value.length === 1) {
-//       console.log('Veuillez entrer au moins deux caractères');
-//       firstNameInputMessage.textContent = nameMessageShort;
-//       firstNameInputParent.appendChild(firstNameInputMessage);
-//     } else {
-//       console.log('Le champ prénom ne peut pas être vide');
-//       firstNameInputMessage.textContent = nameMessageEmpty;
-//       firstNameInputParent.appendChild(firstNameInputMessage);
-//     }
-//   }
-// });
-
-// 'Focus' event listener aimed at removing any existing 'firstNameInputMessage'
-// element created when entering an invalid first name
-// firstNameInput.addEventListener('focus', () => {
-//   // Check whether a 'span' element exists at the very end of the parent element
-//   // console.log(firstNameInputParent.lastElementChild);
-//   console.log(document.getElementById('first-name-input-message')); // returns null if does not exist
-//   if (document.getElementById('first-name-input-message') !== null) {
-//     // Remove element
-//     firstNameInputParent.removeChild(firstNameInputMessage);
-//   }
-// });
-
-
-/**
- * Last name validation
- */
-
-// A variable to store the validity of the input
-// let lastNameIsValid = false;
-
-// Check that, when clicking outside "last name" input box,
-// entered last name has at least two characters
-// lastNameInput.addEventListener('blur', ($event) => {
-//   if ($event.target.value.length > 1) {
-//     console.log('Le champ du nom est valide');
-//     lastNameIsValid = true;
-//     lastNameInput.style.border = inputBorderStyleValid;
-//     lastNameInput.style.backgroundColor = '#E6FFEA';
-//   } else {
-//     lastNameInput.style.border = inputBorderStyleInvalid;
-//     lastNameInput.style.backgroundColor = '#FFE6E6';
-//     if ($event.target.value.length === 1) {
-//       console.log('Veuillez entrer au moins deux caractères');
-//       lastNameInputMessage.textContent = nameMessageShort;
-//       lastNameInputParent.appendChild(lastNameInputMessage);
-//     } else {
-//       console.log('Le champ nom ne peut pas être vide');
-//       lastNameInputMessage.textContent = nameMessageEmpty;
-//       lastNameInputParent.appendChild(lastNameInputMessage);
-//     }
-//   }
-// });
-
-// 'Focus' event listener aimed at removing any existing 'lastNameInputMessage'
-// element created when entering an invalid last name
-// lastNameInput.addEventListener('focus', () => {
-//   // Check whether a 'span' element exists at the very end of the parent element
-//   if (document.getElementById('last-name-input-message') !== null) {
-//     // Remove element
-//     lastNameInputParent.removeChild(lastNameInputMessage);
-//   }
-// });
-
-
-/**
- * Email validation
- */
-
-// A variable to store the validity of the email address
-let emailIsValid = false;
-
-// Check that, when clicking outside "email" input box,
-// entered email address follows xx@xxx.xx pattern
-// (white spaces not allowed, second @ character not allowed)
-const emailCheckSuccess = (email) => {
-  return /^[^\s@]{2,}@[^\s@]{3,}\.[^\s@]{2,}$/.test(email);
-}
-
-emailInput.addEventListener('blur', ($event) => {
-  if (emailCheckSuccess($event.target.value)) {
-    console.log('Le champ email est valide');
-    emailIsValid = true;
-    emailInput.style.border = inputBorderStyleValid;
-    emailInput.style.backgroundColor = '#E6FFEA';
-  } else {
-    emailInput.style.border = inputBorderStyleInvalid;
-    emailInput.style.backgroundColor = '#FFE6E6';
-    if ($event.target.value === '') {
-      console.log('Le champ email ne peut pas être vide');
-      emailInputMessage.textContent = emailMessageEmpty;
-    } else {
-      console.log('Veuillez entrer une adresse email valide du type xx@xxx.xx');
-      emailInputMessage.textContent = emailMessageInvalid;
-    }
-    emailInputParent.appendChild(emailInputMessage);
-  }
-});
-
-// 'Focus' event listener aimed at removing any existing 'emailInputMessage'
-// element created when entering an invalid email
-emailInput.addEventListener('focus', () => {
-  // Check whether a 'span' element exists at the very end of the parent element
-  if (document.getElementById('email-input-message') !== null) {
-    // Remove element
-    emailInputParent.removeChild(emailInputMessage);
-  }
-});
-
+/*******************************************************************************/
 
 /**
  * Date of birth validation
@@ -527,75 +436,52 @@ termsOfUseCheckbox.addEventListener('change', ($event) => {
  * Validation of all fields before form submission
  */
 
-// Check if all fields are valid
-// let allFieldsAreValid = false;
-
 form.addEventListener('submit', ($event) => {
   $event.preventDefault();
-  // allFieldsAreValid = firstNameIsValid
-  //                  && lastNameIsValid
-  //                  && emailIsValid
-  //                  && dateOfBirthIsValid
-  //                  && numberOfTournamentsIsValid
-  //                  && radioInputIsValid
-  //                  && checkboxesInputIsValid;
-  // if (allFieldsAreValid) {
-  //   console.log(`All fields are valid. Form can be submitted! ${allFieldsAreValid}`);
-  //   // showSuccessMessage();
-  // } else {
-  //   console.log(`Sorry, form cannot be submitted! ${allFieldsAreValid}`);
-  //   console.log(`First name is valid: ${firstNameIsValid}`);
-  //   console.log(`Last name is valid: ${lastNameIsValid}`);
-  //   console.log(`Email is valid: ${emailIsValid}`);
-  //   console.log(`DOB is valid: ${dateOfBirthIsValid}`);
-  //   console.log(`Nb of tourneys is valid: ${numberOfTournamentsIsValid}`);
-  //   console.log(`Radio input is valid: ${radioInputIsValid}`);
-  //   console.log(`Checkboxes input is valid: ${checkboxesInputIsValid}`);
-
   // Check validity of input fields one by one
   // in order to display one message at a time
   if (!firstNameIsValid) {
     console.log('First name is invalid!');
-    firstNameInput.style.border = inputBorderStyleInvalid;
-    firstNameInput.style.backgroundColor = '#FFE6E6';
+    firstNameElement.style.border = inputBorderStyleInvalid;
+    firstNameElement.style.backgroundColor = '#FFE6E6';
     // Two possible scenarii:
     // 1) Field is empty
-    if (firstNameInput.value.length === 0) {
-      firstNameInputMessage.textContent = nameMessageEmpty;
+    if (firstNameElement.value.length === 0) {
+      firstNameMessageElement.textContent = messageEmpty;
     }
     // 2) Input has only one character
-    if (firstNameInput.value.length === 1) {
-      firstNameInputMessage.textContent = nameMessageShort;
+    if (firstNameElement.value.length === 1) {
+      firstNameMessageElement.textContent = nameMessageShort;
     }
-    firstNameInputParent.appendChild(firstNameInputMessage);
+    firstNameParentElement.appendChild(firstNameMessageElement);
   } else if (!lastNameIsValid) {
     console.log('Last name is invalid!');
-    lastNameInput.style.border = inputBorderStyleInvalid;
-    lastNameInput.style.backgroundColor = '#FFE6E6';
+    lastNameElement.style.border = inputBorderStyleInvalid;
+    lastNameElement.style.backgroundColor = '#FFE6E6';
     // Two possible scenarii:
     // 1) Field is empty
-    if (lastNameInput.value.length === 0) {
-      lastNameInputMessage.textContent = nameMessageEmpty;
+    if (lastNameElement.value.length === 0) {
+      lastNameMessageElement.textContent = messageEmpty;
     }
     // 2) Input has only one character
-    if (lastNameInput.value.length === 1) {
-      lastNameInputMessage.textContent = nameMessageShort;
+    if (lastNameElement.value.length === 1) {
+      lastNameMessageElement.textContent = nameMessageShort;
     }
-    lastNameInputParent.appendChild(lastNameInputMessage);
+    lastNameParentElement.appendChild(lastNameMessageElement);
   } else if (!emailIsValid) {
     console.log('Email is invalid!');
-    emailInput.style.border = inputBorderStyleInvalid;
-    emailInput.style.backgroundColor = '#FFE6E6';
+    emailElement.style.border = inputBorderStyleInvalid;
+    emailElement.style.backgroundColor = '#FFE6E6';
     // Two possible scenarii:
     // 1) Field is empty
-    if (emailInput.value.length === 0) {
-      emailInputMessage.textContent = emailMessageEmpty;
+    if (emailElement.value.length === 0) {
+      emailMessageElement.textContent = messageEmpty;
     }
     // 2) Input doesn't match regex
-    if (emailCheckSuccess(emailInput.value)) {
-      lastNameInputMessage.textContent = emailMessageInvalid;
+    if (emailRegex.test(emailElement.value)) {
+      emailMessageElement.textContent = emailMessageInvalid;
     }
-    emailInputParent.appendChild(emailInputMessage);
+    emailParentElement.appendChild(emailMessageElement);
   } else if (!dateOfBirthIsValid) {
     console.log('Date of birth is invalid!');
     dateOfBirthInput.style.border = inputBorderStyleInvalid;
