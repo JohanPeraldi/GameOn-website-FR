@@ -149,6 +149,7 @@ const successModal = document.createElement('div');
 successModal.setAttribute('class', 'content');
 // Set its styles
 successModal.style.display = 'flex';
+successModal.style.flexDirection = 'column';
 successModal.style.justifyContent = 'center';
 successModal.style.alignItems = 'center';
 successModal.style.height = '90vh';
@@ -165,6 +166,26 @@ successMessageElement.style.lineHeight = '1.6';
 successMessageElement.style.padding = '24px';
 // Insert the paragraph inside the div
 successModal.appendChild(successMessageElement);
+// Add top close icon
+const closeIcon = document.createElement('span');
+closeIcon.setAttribute('class', 'close');
+successModal.appendChild(closeIcon);
+// Add functionality to close icon
+closeIcon.addEventListener('click', () => {
+  backgroundElement.style.display = 'none';
+});
+// Add close button
+const closeButton = document.createElement('input');
+closeButton.setAttribute('class', 'btn-submit');
+closeButton.setAttribute('type', 'button');
+closeButton.setAttribute('value', 'Fermer');
+closeButton.style.position = 'absolute';
+closeButton.style.bottom = '25px';
+successModal.appendChild(closeButton);
+// Add functionality to close icon
+closeButton.addEventListener('click', () => {
+  backgroundElement.style.display = 'none';
+});
 
 /**
  * First name validation
