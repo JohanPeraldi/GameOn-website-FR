@@ -1,29 +1,80 @@
 /**
+ * Class Input
+ */
+
+class Input {
+  constructor(element, parentElement, regex, messageElement, isValid) {
+    this.element = element;
+    this.parentElement = parentElement;
+    this.regex = regex;
+    this.messageElement = messageElement;
+    this.isValid = isValid;
+  }
+  validate() {
+    console.log('Entered validate() method');
+    this.element.addEventListener('input', ($event) => {
+      if (this.regex.test($event.target.value)) {
+        this.isValid = true;
+        this.element.style.border = inputBorderStyleValid;
+        this.element.style.backgroundColor = '#E6FFEA';
+        this.parentElement.removeChild(this.messageElement);
+      } else {
+        this.element.style.border = inputBorderStyleInvalid;
+        this.element.style.backgroundColor = '#FFE6E6';
+        if ($event.target.value.length === 1) {
+          console.log('Veuillez entrer au moins deux caractères');
+          this.messageElement.textContent = nameMessageShort;
+        } else {
+          console.log('Le champ prénom ne peut pas être vide');
+          this.messageElement.textContent = messageEmpty;
+        }
+        this.parentElement.appendChild(this.messageElement);
+      }
+    });
+  }
+}
+
+/**
+ * VARIABLES
+ */
+
+// Message displayed when a required field is left empty
+const messageEmpty = 'Ce champ ne peut pas être vide';
+// Message displayed after first & last name inputs if under 2 characters in length
+const nameMessageShort = 'Veuillez entrer au moins deux caractères';
+// Messages styles
+const inputBorderStyleValid = '1px solid green';
+const inputBorderStyleInvalid = '1px solid red';
+const messageFontSize = '14px';
+const messageColor = 'red';
+
+/**
+ * Regular Expressions
+ */
+
+// First & last name validation
+const nameRegex = /^\S{2,}$/;
+
+
+/**
  * DOM Elements
  */
 
 /* ********************* FIRST NAME ************************ */
 // "Prénom" input
-const firstNameInput = document.getElementById('first');
+const firstNameElement = document.getElementById('first');
 
 // Parent of "prénom" input
-const firstNameInputParent = firstNameInput.parentElement;
+const firstNameParentElement = firstNameElement.parentElement;
 
 // Create a span element that will contain a message
 // to be inserted after input element
-const firstNameInputMessage = document.createElement('span');
+const firstNameMessageElement = document.createElement('span');
 // Give it an id
-firstNameInputMessage.setAttribute('id', 'first-name-input-message');
+// firstNameElementMessage.setAttribute('id', 'first-name-input-message');
 // The message to display inside the created 'span' element
-const nameMessageEmpty = 'Ce champ ne peut pas être vide';
-const nameMessageShort = 'Veuillez entrer au moins deux caractères';
-// Style the message
-const inputBorderStyleValid = '1px solid green';
-const inputBorderStyleInvalid = '1px solid red';
-const messageFontSize = '14px';
-const messageColor = 'red';
-firstNameInputMessage.style.fontSize = messageFontSize;
-firstNameInputMessage.style.color = messageColor;
+firstNameMessageElement.style.fontSize = messageFontSize;
+firstNameMessageElement.style.color = messageColor;
 
 /* ********************* LAST NAME ************************ */
 // "Nom" input
@@ -105,7 +156,7 @@ numberOfTournamentsInputMessage.style.color = messageColor;
 const radioButtonsParent = document.getElementById('location1').parentElement;
 // Create a span element that will contain a message
 // to be inserted after tournament options radio buttons element
-radioButtonsInputMessage = document.createElement('span');
+const radioButtonsInputMessage = document.createElement('span');
 // Give it an id
 radioButtonsInputMessage.setAttribute('id', 'tournament-options-input-message');
 // The message to display inside the created 'span' element
@@ -191,43 +242,51 @@ closeButton.addEventListener('click', () => {
  * First name validation
  */
 
-// A variable to store the validity of the input
+/*******************************************************************************/
+// USE CLASS INPUT
 let firstNameIsValid = false;
+const firstNameInput = new Input(firstNameElement, firstNameParentElement, nameRegex, firstNameMessageElement, firstNameIsValid);
+firstNameInput.validate();
+
+/*******************************************************************************/
+
+// A variable to store the validity of the input
+// let firstNameIsValid = false;
 
 // Check that, when clicking outside "first name" input box,
 // entered first name has at least two characters
-firstNameInput.addEventListener('blur', ($event) => {
-  if ($event.target.value.length > 1) {
-    console.log('Le champ du prénom est valide');
-    firstNameIsValid = true;
-    firstNameInput.style.border = inputBorderStyleValid;
-    firstNameInput.style.backgroundColor = '#E6FFEA';
-  } else {
-    firstNameInput.style.border = inputBorderStyleInvalid;
-    firstNameInput.style.backgroundColor = '#FFE6E6';
-    if ($event.target.value.length === 1) {
-      console.log('Veuillez entrer au moins deux caractères');
-      firstNameInputMessage.textContent = nameMessageShort;
-      firstNameInputParent.appendChild(firstNameInputMessage);
-    } else {
-      console.log('Le champ prénom ne peut pas être vide');
-      firstNameInputMessage.textContent = nameMessageEmpty;
-      firstNameInputParent.appendChild(firstNameInputMessage);
-    }
-  }
-});
+// firstNameInput.addEventListener('blur', ($event) => {
+//   if ($event.target.value.length > 1) {
+//     console.log('Le champ du prénom est valide');
+//     firstNameIsValid = true;
+//     firstNameInput.style.border = inputBorderStyleValid;
+//     firstNameInput.style.backgroundColor = '#E6FFEA';
+//   } else {
+//     firstNameInput.style.border = inputBorderStyleInvalid;
+//     firstNameInput.style.backgroundColor = '#FFE6E6';
+//     if ($event.target.value.length === 1) {
+//       console.log('Veuillez entrer au moins deux caractères');
+//       firstNameInputMessage.textContent = nameMessageShort;
+//       firstNameInputParent.appendChild(firstNameInputMessage);
+//     } else {
+//       console.log('Le champ prénom ne peut pas être vide');
+//       firstNameInputMessage.textContent = nameMessageEmpty;
+//       firstNameInputParent.appendChild(firstNameInputMessage);
+//     }
+//   }
+// });
 
 // 'Focus' event listener aimed at removing any existing 'firstNameInputMessage'
 // element created when entering an invalid first name
-firstNameInput.addEventListener('focus', () => {
-  // Check whether a 'span' element exists at the very end of the parent element
-  // console.log(firstNameInputParent.lastElementChild);
-  console.log(document.getElementById('first-name-input-message')); // returns null if does not exist
-  if (document.getElementById('first-name-input-message') !== null) {
-    // Remove element
-    firstNameInputParent.removeChild(firstNameInputMessage);
-  }
-});
+// firstNameInput.addEventListener('focus', () => {
+//   // Check whether a 'span' element exists at the very end of the parent element
+//   // console.log(firstNameInputParent.lastElementChild);
+//   console.log(document.getElementById('first-name-input-message')); // returns null if does not exist
+//   if (document.getElementById('first-name-input-message') !== null) {
+//     // Remove element
+//     firstNameInputParent.removeChild(firstNameInputMessage);
+//   }
+// });
 
 
 /**
