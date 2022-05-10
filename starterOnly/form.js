@@ -72,25 +72,25 @@ const firstNameParentElement = firstNameElement.parentElement;
 const firstNameMessageElement = document.createElement('span');
 // Give it an id
 // firstNameElementMessage.setAttribute('id', 'first-name-input-message');
-// The message to display inside the created 'span' element
-firstNameMessageElement.style.fontSize = messageFontSize;
-firstNameMessageElement.style.color = messageColor;
+// Style the message
+firstNameMessageElement.style.fontSize = messageFontSize; // Repeated code: REFACTOR!
+firstNameMessageElement.style.color = messageColor; // Repeated code: REFACTOR!
 
 /* ********************* LAST NAME ************************ */
 // "Nom" input
-const lastNameInput = document.getElementById('last');
+const lastNameElement = document.getElementById('last');
 
 // Parent of "nom" input
-const lastNameInputParent = lastNameInput.parentElement;
+const lastNameParentElement = lastNameElement.parentElement;
 
 // Create a span element that will contain a message
 // to be inserted after input element
-const lastNameInputMessage = document.createElement('span');
+const lastNameMessageElement = document.createElement('span');
 // Give it an id
-lastNameInputMessage.setAttribute('id', 'last-name-input-message');
+// lastNameMessageElement.setAttribute('id', 'last-name-input-message');
 // Style the message
-lastNameInputMessage.style.fontSize = messageFontSize;
-lastNameInputMessage.style.color = messageColor;
+lastNameMessageElement.style.fontSize = messageFontSize; // Repeated code: REFACTOR!
+lastNameMessageElement.style.color = messageColor; // Repeated code: REFACTOR!
 
 /* *********************** EMAIL ************************** */
 // "Email" input
@@ -244,9 +244,15 @@ closeButton.addEventListener('click', () => {
 
 /*******************************************************************************/
 // USE CLASS INPUT
+// FIRST NAME VALIDATION
 let firstNameIsValid = false;
 const firstNameInput = new Input(firstNameElement, firstNameParentElement, nameRegex, firstNameMessageElement, firstNameIsValid);
 firstNameInput.validate();
+
+// LAST NAME VALIDATION
+let lastNameIsValid = false;
+const lastNameInput = new Input(lastNameElement, lastNameParentElement, nameRegex, lastNameMessageElement, lastNameIsValid);
+lastNameInput.validate();
 
 /*******************************************************************************/
 
@@ -294,40 +300,40 @@ firstNameInput.validate();
  */
 
 // A variable to store the validity of the input
-let lastNameIsValid = false;
+// let lastNameIsValid = false;
 
 // Check that, when clicking outside "last name" input box,
 // entered last name has at least two characters
-lastNameInput.addEventListener('blur', ($event) => {
-  if ($event.target.value.length > 1) {
-    console.log('Le champ du nom est valide');
-    lastNameIsValid = true;
-    lastNameInput.style.border = inputBorderStyleValid;
-    lastNameInput.style.backgroundColor = '#E6FFEA';
-  } else {
-    lastNameInput.style.border = inputBorderStyleInvalid;
-    lastNameInput.style.backgroundColor = '#FFE6E6';
-    if ($event.target.value.length === 1) {
-      console.log('Veuillez entrer au moins deux caractères');
-      lastNameInputMessage.textContent = nameMessageShort;
-      lastNameInputParent.appendChild(lastNameInputMessage);
-    } else {
-      console.log('Le champ nom ne peut pas être vide');
-      lastNameInputMessage.textContent = nameMessageEmpty;
-      lastNameInputParent.appendChild(lastNameInputMessage);
-    }
-  }
-});
+// lastNameInput.addEventListener('blur', ($event) => {
+//   if ($event.target.value.length > 1) {
+//     console.log('Le champ du nom est valide');
+//     lastNameIsValid = true;
+//     lastNameInput.style.border = inputBorderStyleValid;
+//     lastNameInput.style.backgroundColor = '#E6FFEA';
+//   } else {
+//     lastNameInput.style.border = inputBorderStyleInvalid;
+//     lastNameInput.style.backgroundColor = '#FFE6E6';
+//     if ($event.target.value.length === 1) {
+//       console.log('Veuillez entrer au moins deux caractères');
+//       lastNameInputMessage.textContent = nameMessageShort;
+//       lastNameInputParent.appendChild(lastNameInputMessage);
+//     } else {
+//       console.log('Le champ nom ne peut pas être vide');
+//       lastNameInputMessage.textContent = nameMessageEmpty;
+//       lastNameInputParent.appendChild(lastNameInputMessage);
+//     }
+//   }
+// });
 
 // 'Focus' event listener aimed at removing any existing 'lastNameInputMessage'
 // element created when entering an invalid last name
-lastNameInput.addEventListener('focus', () => {
-  // Check whether a 'span' element exists at the very end of the parent element
-  if (document.getElementById('last-name-input-message') !== null) {
-    // Remove element
-    lastNameInputParent.removeChild(lastNameInputMessage);
-  }
-});
+// lastNameInput.addEventListener('focus', () => {
+//   // Check whether a 'span' element exists at the very end of the parent element
+//   if (document.getElementById('last-name-input-message') !== null) {
+//     // Remove element
+//     lastNameInputParent.removeChild(lastNameInputMessage);
+//   }
+// });
 
 
 /**
