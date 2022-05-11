@@ -119,9 +119,6 @@ const firstNameParentElement = firstNameElement.parentElement;
 const firstNameMessageElement = document.createElement('span');
 // Give it an id
 firstNameMessageElement.setAttribute('id', message.id.firstName);
-// Style it
-firstNameMessageElement.style.fontSize = input.style.fontSize;
-firstNameMessageElement.style.color = input.style.color;
 
 /* ********************* LAST NAME ************************ */
 // 1) Target existing DOM elements
@@ -136,9 +133,13 @@ const lastNameParentElement = lastNameElement.parentElement;
 const lastNameMessageElement = document.createElement('span');
 // Give it an id
 lastNameMessageElement.setAttribute('id', message.id.lastName);
-// Style it
-lastNameMessageElement.style.fontSize = input.style.fontSize;
-lastNameMessageElement.style.color = input.style.color;
+
+/* *************** STYLE MESSAGE ELEMENTS ****************** */
+// Create an array to store all message elements
+const messageElements = [firstNameMessageElement, lastNameMessageElement];
+// Style all elements in array
+messageElements.forEach(element => element.style.fontSize = input.style.fontSize);
+messageElements.forEach(element => element.style.color = input.style.color);
 
 /* ********************************************************* */
 
@@ -146,6 +147,7 @@ lastNameMessageElement.style.color = input.style.color;
 const firstNameInput = new Input(input.type.name, firstNameElement, firstNameParentElement, regex.name, firstNameMessageElement, message.id.firstName);
 const lastNameInput = new Input(input.type.name, lastNameElement, lastNameParentElement, regex.name, lastNameMessageElement, message.id.lastName);
 
+// Create an array to store all inputs
+const inputs = [firstNameInput, lastNameInput];
 // Call validation method on all inputs
-firstNameInput.validate();
-lastNameInput.validate();
+inputs.forEach(input => input.validate());
