@@ -13,7 +13,7 @@ class Input {
   }
 
   validate() {
-    console.log(`Entered validate() method for ${this.type}`);
+    console.log(`Entered validate() method for ${this.messageElementId}`);
     this.parentElement.addEventListener('input', ($event) => {
       console.log(`Entered: ${$event.target.value}`);
       if (this.regex.test($event.target.value)) {
@@ -24,12 +24,12 @@ class Input {
         if (document.getElementById(this.messageElementId)) {
           this.parentElement.removeChild(this.messageElement);
         }
-        console.log('First name is valid');
+        console.log('Input is valid');
       } else {
         // If input doesn't match regex, give it invalid styles
         this.element.style.border = input.style.inputBorderInvalid;
         this.element.style.backgroundColor = input.style.backgroundColorInvalid;
-        console.log('First name is invalid');
+        console.log('Input is invalid');
         // If input field is empty
         if ($event.target.value.length === 0) {
           console.log('Ce champ ne peut pas être vide');
@@ -85,13 +85,13 @@ const message = {
     numberOfTournamentsInvalid: 'Veuillez entrer un nombre entre 0 et 99 inclus'
   },
   id: {
-    firstName: 'first-name-message',
-    lastName: 'last-name-message',
-    email: 'email-message',
-    dateOfBirth: 'dob-message',
-    numberOfTournaments: 'number-of-tournaments-message',
-    tournamentOptions: 'tournament-options-message',
-    termsOfUse: 'terms-of-use-message'
+    firstName: 'first-name',
+    lastName: 'last-name',
+    email: 'email',
+    dateOfBirth: 'date-of-birth',
+    numberOfTournaments: 'number-of-tournaments',
+    tournamentOptions: 'tournament-options',
+    termsOfUse: 'terms-of-use'
   }
 };
 
@@ -123,10 +123,29 @@ firstNameMessageElement.setAttribute('id', message.id.firstName);
 firstNameMessageElement.style.fontSize = input.style.fontSize;
 firstNameMessageElement.style.color = input.style.color;
 
+/* ********************* LAST NAME ************************ */
+// 1) Target existing DOM elements
+// Last name input
+const lastNameElement = document.getElementById('last');
+// Parent of last name input
+const lastNameParentElement = lastNameElement.parentElement;
+
+// 2) Create DOM element
+// Create a span element that will contain a message
+// to be inserted after input element
+const lastNameMessageElement = document.createElement('span');
+// Give it an id
+lastNameMessageElement.setAttribute('id', message.id.lastName);
+// Style it
+lastNameMessageElement.style.fontSize = input.style.fontSize;
+lastNameMessageElement.style.color = input.style.color;
+
 /* ********************************************************* */
 
 // Instantiate inputs
 const firstNameInput = new Input(input.type.name, firstNameElement, firstNameParentElement, regex.name, firstNameMessageElement, message.id.firstName);
+const lastNameInput = new Input(input.type.name, lastNameElement, lastNameParentElement, regex.name, lastNameMessageElement, message.id.lastName);
 
 // Call validation method on all inputs
 firstNameInput.validate();
+lastNameInput.validate();
