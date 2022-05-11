@@ -24,14 +24,14 @@ class Input {
           this.isValid = true;
           this.isValid === true ? console.log(`${this.type} is valid`) : console.log(`${this.type} is invalid`);
           this.element.style.border = inputBorderStyleValid;
-          this.element.style.backgroundColor = '#E6FFEA';
+          this.element.style.backgroundColor = backgroundColorValid;
           console.log(this.messageElement);
           if (document.getElementById(this.messageElementId)) {
             this.parentElement.removeChild(this.messageElement);
           }
         } else {
           this.element.style.border = inputBorderStyleInvalid;
-          this.element.style.backgroundColor = '#FFE6E6';
+          this.element.style.backgroundColor = backgroundColorInvalid;
           // Code below for empty fields
           if ($event.target.value.length === 0) {
             console.log('Ce champ ne peut pas être vide');
@@ -61,6 +61,7 @@ class Input {
         console.log(`${this.type} type input validity doesn't use regex`);
         // For inputs that don't use a regex for validation, i.e. date of birth
         // Code below only for date of birth
+        // REFACTOR CODE BELOW!
         if (this.type === 'date') {
           console.log('Checking DOB validity...');
           dateOfBirthIsInPast = Date.now() - Date.parse($event.target.value) > 0;
@@ -68,26 +69,50 @@ class Input {
           if ($event.target.value !== '') {
             if (!dateOfBirthIsInPast) {
               console.log('Come on! You can\'t be born in the future!');
-              dateOfBirthElement.style.border = inputBorderStyleInvalid;
-              dateOfBirthElement.style.backgroundColor = '#FFE6E6';
-              dateOfBirthMessageElement.textContent = dateOfBirthMessageInvalid;
-              dateOfBirthParentElement.appendChild(dateOfBirthMessageElement);
+              this.element.style.border = inputBorderStyleInvalid;
+              this.element.style.backgroundColor = backgroundColorInvalid;
+              this.messageElement.textContent = dateOfBirthMessageInvalid;
+              this.parentElement.appendChild(this.messageElement);
             } else {
               console.log('Le champ date de naissance est valide');
-              dateOfBirthIsValid = true;
-              dateOfBirthElement.style.border = inputBorderStyleValid;
-              dateOfBirthElement.style.backgroundColor = '#E6FFEA';
-              console.log(dateOfBirthMessageElement);
-              dateOfBirthParentElement.removeChild(dateOfBirthMessageElement);
+              this.isValid = true;
+              this.element.style.border = inputBorderStyleValid;
+              this.element.style.backgroundColor = backgroundColorValid;
+              console.log(this.messageElement);
+              if (document.getElementById(this.messageElementId)) {
+                this.parentElement.removeChild(this.messageElement);
+              }
             }
           } else {
             console.log('Le champ date de naissance ne peut pas être vide');
-            dateOfBirthElement.style.border = inputBorderStyleInvalid;
-            dateOfBirthElement.style.backgroundColor = '#FFE6E6';
-            dateOfBirthMessageElement.textContent = dateOfBirthMessageEmpty;
-            dateOfBirthParentElement.appendChild(dateOfBirthMessageElement);
+            this.element.style.border = inputBorderStyleInvalid;
+            this.element.style.backgroundColor = backgroundColorInvalid;
+            this.messageElement.textContent = dateOfBirthMessageEmpty;
+            this.parentElement.appendChild(dateOfBirthMessageElement);
           }
         }
+        // Code below only for tournament options
+        // Validity check for this input should be on form submit only!!
+        // Remove following and insert check in submit form check
+        // if (this.type === 'radio') {
+        //   this.messageElement.textContent = tournamentOptionsMessage;
+        //   const tournamentLocation = $event.target.value;
+        //   tournamentOptionsIsValid = tournamentLocation === 'New York'
+        //                           || tournamentLocation === 'San Francisco'
+        //                           || tournamentLocation === 'Seattle'
+        //                           || tournamentLocation === 'Chicago'
+        //                           || tournamentLocation === 'Boston'
+        //                           || tournamentLocation === 'Portland';
+        //   console.log(`Option selected: ${tournamentLocation}`);
+        //   console.log(`Option is valid: ${tournamentOptionsIsValid}`);
+        //   // Remove error message if present
+        //   if (tournamentOptionsIsValid) {
+        //     if (document.getElementById(tournamentOptionsMessageId)) {
+        //       this.parentElement.removeChild(this.messageElement);
+        //     }
+        //   }
+        // }
+        // Remove above code
       }
     });
   }
@@ -102,7 +127,7 @@ const nameType = 'text';
 const emailType = 'email';
 const dateOfBirthType = 'date';
 const numberOfTournamentsType = 'number';
-const radioButtonsType = 'radio';
+const tournamentOptionsType = 'radio';
 const termsOfUseType = 'checkbox';
 // Message elements' ids
 const firstNameMessageId = 'first-name-message';
@@ -124,6 +149,11 @@ const dateOfBirthMessageEmpty = 'Veuillez entrer votre date de naissance';
 const dateOfBirthMessageInvalid = 'Veuillez naître avant de vous inscrire';
 // Message displayed when entered number is out of allowed range
 const numberOfTournamentsMessage = 'Veuillez entrer un nombre entre 0 et 99 inclus';
+// Message displayed when no tournament option is selected
+const tournamentOptionsMessage = 'Veuillez choisir une option';
+// Input fields styles
+const backgroundColorValid = '#E6FFEA';
+const backgroundColorInvalid = '#FFE6E6';
 // Messages styles
 const inputBorderStyleValid = '1px solid green';
 const inputBorderStyleInvalid = '1px solid red';
@@ -147,10 +177,10 @@ const numberOfTournamentsRegex = /^\d{1,2}$/;
  */
 
 /* ********************* FIRST NAME ************************ */
-// "Prénom" input
+// First name input
 const firstNameElement = document.getElementById('first'); // Repeated code: REFACTOR!
 
-// Parent of "prénom" input
+// Parent of first name input
 const firstNameParentElement = firstNameElement.parentElement; // Repeated code: REFACTOR!
 
 // Create a span element that will contain a message
@@ -163,10 +193,10 @@ firstNameMessageElement.style.fontSize = messageFontSize; // Repeated code: REFA
 firstNameMessageElement.style.color = messageColor; // Repeated code: REFACTOR!
 
 /* ********************* LAST NAME ************************ */
-// "Nom" input
+// Last name input
 const lastNameElement = document.getElementById('last'); // Repeated code: REFACTOR!
 
-// Parent of "nom" input
+// Parent of last name input
 const lastNameParentElement = lastNameElement.parentElement; // Repeated code: REFACTOR!
 
 // Create a span element that will contain a message
@@ -179,10 +209,10 @@ lastNameMessageElement.style.fontSize = messageFontSize; // Repeated code: REFAC
 lastNameMessageElement.style.color = messageColor; // Repeated code: REFACTOR!
 
 /* *********************** EMAIL ************************** */
-// "Email" input
+// Email input
 const emailElement = document.getElementById('email'); // Repeated code: REFACTOR!
 
-// Parent of "email" input
+// Parent of email input
 const emailParentElement = emailElement.parentElement; // Repeated code: REFACTOR!
 
 // Create a span element that will contain a message
@@ -195,10 +225,10 @@ emailMessageElement.style.fontSize = messageFontSize; // Repeated code: REFACTOR
 emailMessageElement.style.color = messageColor; // Repeated code: REFACTOR!
 
 /* ******************* DATE OF BIRTH ********************** */
-// "Date of birth" input
+// Date of birth input
 const dateOfBirthElement = document.getElementById('birthdate'); // Repeated code: REFACTOR!
 
-// Parent of "date of birth" input
+// Parent of date of birth input
 const dateOfBirthParentElement = dateOfBirthElement.parentElement; // Repeated code: REFACTOR!
 
 // Create a span element that will contain a message
@@ -211,10 +241,10 @@ dateOfBirthMessageElement.style.fontSize = messageFontSize; // Repeated code: RE
 dateOfBirthMessageElement.style.color = messageColor; // Repeated code: REFACTOR!
 
 /* ********************* TOURNAMENTS *********************** */
-// "Number of tournaments" input
+// Number of tournaments input
 const numberOfTournamentsElement = document.getElementById('quantity'); // Repeated code: REFACTOR!
 
-// Parent of "number of tournaments" input
+// Parent of number of tournaments input
 const numberOfTournamentsParentElement = numberOfTournamentsElement.parentElement; // Repeated code: REFACTOR!
 
 // Create a span element that will contain a message
@@ -222,27 +252,21 @@ const numberOfTournamentsParentElement = numberOfTournamentsElement.parentElemen
 const numberOfTournamentsMessageElement = document.createElement('span'); // Repeated code: REFACTOR!
 // Give it an id
 numberOfTournamentsMessageElement.setAttribute('id', numberOfTournamentsMessageId);
-// Add the message
-// numberOfTournamentsInputMessage.textContent = numberOfTournamentsMessage;
 // Style the message
 numberOfTournamentsMessageElement.style.fontSize = messageFontSize; // Repeated code: REFACTOR!
 numberOfTournamentsMessageElement.style.color = messageColor; // Repeated code: REFACTOR!
 
 /* ***************** TOURNAMENT OPTIONS ******************** */
-// "Radio buttons" input parent element
-const radioButtonsParent = document.getElementById('location1').parentElement;
+// Tournament options parent element
+const tournamentOptionsParentElement = document.getElementById('location1').parentElement;
 // Create a span element that will contain a message
 // to be inserted after tournament options radio buttons element
-const radioButtonsInputMessage = document.createElement('span');
+const tournamentOptionsMessageElement = document.createElement('span');
 // Give it an id
-radioButtonsInputMessage.setAttribute('id', tournamentOptionsMessageId);
-// The message to display inside the created 'span' element
-const radioButtonsMessage = 'Veuillez choisir une option';
-// Add the contents of the message
-radioButtonsInputMessage.textContent = radioButtonsMessage;
+tournamentOptionsMessageElement.setAttribute('id', tournamentOptionsMessageId);
 // Style the message
-radioButtonsInputMessage.style.fontSize = messageFontSize;
-radioButtonsInputMessage.style.color = messageColor;
+tournamentOptionsMessageElement.style.fontSize = messageFontSize;
+tournamentOptionsMessageElement.style.color = messageColor;
 
 /* ******************** TERMS OF USE *********************** */
 // "Checkbox" input with id='checkbox1' (terms of use)
@@ -349,6 +373,11 @@ let numberOfTournamentsIsValid = false;
 const numberOfTournamentsInput = new Input(numberOfTournamentsType, numberOfTournamentsElement, numberOfTournamentsParentElement, numberOfTournamentsRegex, numberOfTournamentsMessageElement, numberOfTournamentsMessageId, numberOfTournamentsIsValid);
 numberOfTournamentsInput.validate(); // Repeated code: REFACTOR!
 
+// TOURNAMENT OPTIONS VALIDATION
+let tournamentOptionsIsValid = false;
+const tournamentOptionsInput = new Input(tournamentOptionsType, tournamentOptionsParentElement, tournamentOptionsParentElement, null, tournamentOptionsMessageElement, tournamentOptionsMessageId, tournamentOptionsIsValid);
+tournamentOptionsInput.validate(); // Repeated code: REFACTOR!
+
 
 /*******************************************************************************/
 
@@ -357,32 +386,6 @@ numberOfTournamentsInput.validate(); // Repeated code: REFACTOR!
  */
 
 /*******************************************************************************/
-
-
-/**
- * Radio buttons validation
- */
-
-// A variable to store the validity of the radio buttons selection
-let radioInputIsValid = false;
-
-radioButtonsParent.addEventListener('change', ($event) => {
-  const tournamentLocation = $event.target.value;
-  radioInputIsValid = tournamentLocation === 'New York'
-    || tournamentLocation === 'San Francisco'
-    || tournamentLocation === 'Seattle'
-    || tournamentLocation === 'Chicago'
-    || tournamentLocation === 'Boston'
-    || tournamentLocation === 'Portland';
-  console.log(`Option selected: ${tournamentLocation}`);
-  console.log(`Option is valid: ${radioInputIsValid}`);
-  // Remove error message if present
-  if (radioInputIsValid) {
-    if (document.getElementById('tournament-options-input-message')) {
-      radioButtonsParent.removeChild(radioButtonsInputMessage);
-    }
-  }
-});
 
 
 /**
