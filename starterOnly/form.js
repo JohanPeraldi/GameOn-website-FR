@@ -53,7 +53,13 @@ class Input {
           }
           // Code below only for number of tournaments
           if (this.type === 'number') {
-            this.messageElement.textContent = numberOfTournamentsMessage;
+            // Input field is empty
+            if ($event.target.value === '') {
+              this.messageElement.textContent = messageEmpty;
+            } else {
+              // Entered number is out or range
+              this.messageElement.textContent = numberOfTournamentsMessage;
+            }
           }
           this.parentElement.appendChild(this.messageElement);
         }
