@@ -104,6 +104,24 @@ class Input {
         }
 
         // 2) If input type === 'radio' (tournament options input)
+        if (this.type === 'radio') {
+          this.messageElement.textContent = message.content.empty.tournamentOptions;
+          const tournamentLocation = $event.target.value;
+          this.isValid = tournamentLocation === 'New York'
+            || tournamentLocation === 'San Francisco'
+            || tournamentLocation === 'Seattle'
+            || tournamentLocation === 'Chicago'
+            || tournamentLocation === 'Boston'
+            || tournamentLocation === 'Portland';
+          console.log(`Option selected: ${tournamentLocation}`);
+          console.log(`Option is valid: ${this.isValid}`);
+          // Remove error message if present
+          if (this.isValid) {
+            if (document.getElementById(this.messageElementId)) {
+              this.parentElement.removeChild(this.messageElement);
+            }
+          }
+        }
       }
     });
   }
@@ -144,7 +162,8 @@ const message = {
     nameTooShort: 'Veuillez entrer au moins deux caractères',
     emailInvalid: 'Veuillez entrer une adresse email valide du type xx@xxx.xx',
     dateOfBirthInvalid: 'Vous n\'êtes pas encore né!',
-    numberOfTournamentsInvalid: 'Veuillez entrer un nombre entre 0 et 99 inclus'
+    numberOfTournamentsInvalid: 'Veuillez entrer un nombre entre 0 et 99 inclus',
+    onSubmit: 'Erreur de saisie sur le champ ci-dessus'
   },
   id: {
     firstName: 'first-name',
@@ -238,9 +257,21 @@ const numberOfTournamentsMessageElement = document.createElement('span');
 // Give it an id
 numberOfTournamentsMessageElement.setAttribute('id', message.id.numberOfTournaments);
 
+/* ***************** TOURNAMENT OPTIONS ******************** */
+// 1) Target existing DOM element
+// Tournament options parent element
+const tournamentOptionsParentElement = document.getElementById('location1').parentElement;
+
+// 2) Create DOM element
+// Create a span element that will contain a message
+// to be inserted after tournament options radio buttons element
+const tournamentOptionsMessageElement = document.createElement('span');
+// Give it an id
+tournamentOptionsMessageElement.setAttribute('id', message.id.tournamentOptions);
+
 /* *************** STYLE MESSAGE ELEMENTS ****************** */
 // Create an array to store all message elements
-const messageElements = [firstNameMessageElement, lastNameMessageElement, emailMessageElement, dateOfBirthMessageElement, numberOfTournamentsMessageElement];
+const messageElements = [firstNameMessageElement, lastNameMessageElement, emailMessageElement, dateOfBirthMessageElement, numberOfTournamentsMessageElement, tournamentOptionsMessageElement];
 // Style all elements in array
 messageElements.forEach(element => element.style.fontSize = input.style.fontSize);
 messageElements.forEach(element => element.style.color = input.style.color);
@@ -307,9 +338,10 @@ const lastNameInput = new Input(input.type.name, lastNameElement, lastNameParent
 const emailInput = new Input(input.type.email, emailElement, emailParentElement, regex.email, emailMessageElement, message.id.email, false);
 const dateOfBirthInput = new Input(input.type.dateOfBirth, dateOfBirthElement, dateOfBirthParentElement, null, dateOfBirthMessageElement, message.id.dateOfBirth, false);
 const numberOfTournamentsInput = new Input(input.type.numberOfTournaments, numberOfTournamentsElement, numberOfTournamentsParentElement, regex.numberOfTournaments, numberOfTournamentsMessageElement, message.id.numberOfTournaments, false);
+const tournamentOptionsInput = new Input(input.type.tournamentOptions, tournamentOptionsParentElement, tournamentOptionsParentElement, null, tournamentOptionsMessageElement, message.id.tournamentOptions, false);
 
 // Create an array to store all inputs
-const inputs = [firstNameInput, lastNameInput, emailInput, dateOfBirthInput, numberOfTournamentsInput];
+const inputs = [firstNameInput, lastNameInput, emailInput, dateOfBirthInput, numberOfTournamentsInput, tournamentOptionsInput];
 // Call validation method on all inputs
 inputs.forEach(input => input.validate());
 
@@ -335,20 +367,38 @@ const formIsValid = (inputs) => {
     input.isValid ? validInputs++ : invalidInputs++;
     totalInputs++;
     if (!input.isValid) {
-      confirmedInvalid.push(input.element.id);
-      messageElement.push(input.messageElement);
+      // If invalid input is the radio buttons element
+      // it should be processed differently because we
+      // are targeting the parent element, not the radio
+      // inputs themselves
+      if (input.type === 'radio') {
+        console.log('No radio button selected!');
+        confirmedInvalid.push('radio');
+        messageElement.push(tournamentOptionsMessageElement);
+      } else {
+        confirmedInvalid.push(input.element.id);
+        messageElement.push(input.messageElement);
+      }
     }
   })
+  console.log(confirmedInvalid, messageElement);
   if (invalidInputs === 0 && validInputs === totalInputs) {
     console.log('All inputs are valid! Form can be submitted!');
     replaceFormContent();
   } else {
     console.log(`There are ${validInputs} valid input(s) and ${invalidInputs} invalid input(s) out of ${totalInputs}. Form cannot be submitted.`)
     console.log(`Invalid input field(s): ${confirmedInvalid}`);
-    messageElement[0].textContent = 'Erreur de saisie sur le champ ci-dessus';
-    document.getElementById(confirmedInvalid[0]).style.border = input.style.inputBorderInvalid;
-    document.getElementById(confirmedInvalid[0]).style.backgroundColor = input.style.backgroundColorInvalid;
-    document.getElementById(confirmedInvalid[0]).parentElement.appendChild(messageElement[0]);
+    // The following 'if' block does not apply to radio buttons
+    if (confirmedInvalid[0] !== 'radio') {
+      messageElement[0].textContent = message.content.onSubmit;
+      document.getElementById(confirmedInvalid[0]).style.border = input.style.inputBorderInvalid;
+      document.getElementById(confirmedInvalid[0]).style.backgroundColor = input.style.backgroundColorInvalid;
+      document.getElementById(confirmedInvalid[0]).parentElement.appendChild(messageElement[0]);
+    } else {
+      // This block only applies to radio buttons
+      tournamentOptionsMessageElement.textContent = message.content.empty.tournamentOptions;
+      tournamentOptionsParentElement.appendChild(tournamentOptionsMessageElement);
+    }
   }
 };
 
