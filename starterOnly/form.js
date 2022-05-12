@@ -216,16 +216,65 @@ const dateOfBirthMessageElement = document.createElement('span');
 // Give it an id
 dateOfBirthMessageElement.setAttribute('id', message.id.dateOfBirth);
 
-/* ****************** FORM SUBMISSION ********************* */
-// The form element
-const form = document.querySelector('form');
-
 /* *************** STYLE MESSAGE ELEMENTS ****************** */
 // Create an array to store all message elements
 const messageElements = [firstNameMessageElement, lastNameMessageElement, emailMessageElement, dateOfBirthMessageElement];
 // Style all elements in array
 messageElements.forEach(element => element.style.fontSize = input.style.fontSize);
 messageElements.forEach(element => element.style.color = input.style.color);
+
+/* ****************** FORM SUBMISSION ********************* */
+// 1) Target existing DOM elements
+// The div with the class "bground"
+const backgroundElement = document.querySelector('.bground');
+// The form element
+const form = document.querySelector('form');
+// The form content element
+const formContent = document.querySelector('.content');
+
+// 2) Create DOM elements
+// Create a 'div' element
+const successModal = document.createElement('div');
+successModal.setAttribute('class', 'content');
+// Set its styles
+successModal.style.display = 'flex';
+successModal.style.flexDirection = 'column';
+successModal.style.justifyContent = 'center';
+successModal.style.alignItems = 'center';
+successModal.style.height = '90vh';
+// Create a 'p' element to hold the message to be displayed
+const successMessageElement = document.createElement('p');
+// The message to display
+const successMessage = 'Merci pour votre inscription';
+// Add the contents of the message
+successMessageElement.textContent = successMessage;
+// Style the message
+successMessageElement.style.fontSize = '32px';
+successMessageElement.style.textAlign = 'center';
+successMessageElement.style.lineHeight = '1.6';
+successMessageElement.style.padding = '24px';
+// Insert the paragraph inside the div
+successModal.appendChild(successMessageElement);
+// Add top close icon
+const closeIcon = document.createElement('span');
+closeIcon.setAttribute('class', 'close');
+successModal.appendChild(closeIcon);
+// Add functionality to close icon
+closeIcon.addEventListener('click', () => {
+  backgroundElement.style.display = 'none';
+});
+// Add close button
+const closeButton = document.createElement('input');
+closeButton.setAttribute('class', 'btn-submit');
+closeButton.setAttribute('type', 'button');
+closeButton.setAttribute('value', 'Fermer');
+closeButton.style.position = 'absolute';
+closeButton.style.bottom = '25px';
+successModal.appendChild(closeButton);
+// Add functionality to close icon
+closeButton.addEventListener('click', () => {
+  backgroundElement.style.display = 'none';
+});
 
 /* ********************************************************* */
 
@@ -261,6 +310,7 @@ const formIsValid = (inputs) => {
   })
   if (invalidInputs === 0) {
     console.log('All inputs are valid! Form can be submitted!');
+    replaceFormContent();
   } else {
     console.log(`There are ${validInputs} valid inputs and ${invalidInputs} invalid inputs out of ${totalInputs}. Form cannot be submitted.`)
   }
@@ -273,3 +323,9 @@ form.addEventListener('submit', ($event) => {
   $event.preventDefault();
   formIsValid(inputs);
 });
+
+// Replace form content with success message
+const replaceFormContent = () => {
+  formContent.style.display = 'none';
+  backgroundElement.appendChild(successModal);
+};
