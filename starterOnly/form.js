@@ -163,6 +163,7 @@ const message = {
     emailInvalid: 'Veuillez entrer une adresse email valide du type xx@xxx.xx',
     dateOfBirthInvalid: 'Vous n\'êtes pas encore né!',
     numberOfTournamentsInvalid: 'Veuillez entrer un nombre entre 0 et 99 inclus',
+    termsOfUseInvalid: 'Veuillez lire et accepter les conditions d\'utilisation',
     onSubmit: 'Erreur de saisie sur le champ ci-dessus'
   },
   id: {
@@ -269,12 +270,32 @@ const tournamentOptionsMessageElement = document.createElement('span');
 // Give it an id
 tournamentOptionsMessageElement.setAttribute('id', message.id.tournamentOptions);
 
+/* ******************** TERMS OF USE *********************** */
+// 1) Target existing DOM elements
+// Checkbox input with id="checkbox1" (terms of use)
+const termsOfUseElement = document.getElementById('checkbox1');
+// Terms of use input parent element
+const termsOfUseParentElement = termsOfUseElement.parentElement;
+
+// 2) Create DOM element
+// Create a paragraph element that will contain a message
+// to be inserted after checkboxes element
+const termsOfUseMessageElement = document.createElement('p');
+// Give it an id
+termsOfUseMessageElement.setAttribute('id', message.id.termsOfUse);
+// The message to display inside the created 'p' element
+const termsOfUseMessage = message.content.termsOfUseInvalid;
+// Add the contents of the message
+termsOfUseMessageElement.textContent = termsOfUseMessage;
+
 /* *************** STYLE MESSAGE ELEMENTS ****************** */
 // Create an array to store all message elements
-const messageElements = [firstNameMessageElement, lastNameMessageElement, emailMessageElement, dateOfBirthMessageElement, numberOfTournamentsMessageElement, tournamentOptionsMessageElement];
+const messageElements = [firstNameMessageElement, lastNameMessageElement, emailMessageElement, dateOfBirthMessageElement, numberOfTournamentsMessageElement, tournamentOptionsMessageElement, termsOfUseMessageElement];
 // Style all elements in array
 messageElements.forEach(element => element.style.fontSize = input.style.fontSize);
 messageElements.forEach(element => element.style.color = input.style.color);
+// Add specific style to the "terms of use" message
+termsOfUseMessageElement.style.marginBottom = '10px';
 
 /* ****************** FORM SUBMISSION ********************* */
 // 1) Target existing DOM elements
@@ -339,11 +360,30 @@ const emailInput = new Input(input.type.email, emailElement, emailParentElement,
 const dateOfBirthInput = new Input(input.type.dateOfBirth, dateOfBirthElement, dateOfBirthParentElement, null, dateOfBirthMessageElement, message.id.dateOfBirth, false);
 const numberOfTournamentsInput = new Input(input.type.numberOfTournaments, numberOfTournamentsElement, numberOfTournamentsParentElement, regex.numberOfTournaments, numberOfTournamentsMessageElement, message.id.numberOfTournaments, false);
 const tournamentOptionsInput = new Input(input.type.tournamentOptions, tournamentOptionsParentElement, tournamentOptionsParentElement, null, tournamentOptionsMessageElement, message.id.tournamentOptions, false);
+const termsOfUseInput = new Input(input.type.termsOfUse, termsOfUseElement, termsOfUseParentElement, null, termsOfUseMessageElement, message.id.termsOfUse, false);
 
 // Create an array to store all inputs
-const inputs = [firstNameInput, lastNameInput, emailInput, dateOfBirthInput, numberOfTournamentsInput, tournamentOptionsInput];
+const inputs = [firstNameInput, lastNameInput, emailInput, dateOfBirthInput, numberOfTournamentsInput, tournamentOptionsInput, termsOfUseInput];
 // Call validation method on all inputs
 inputs.forEach(input => input.validate());
+
+/**
+ * Terms of use validation
+ */
+
+// Validation of this field is done on form submit event only
+// We need to verify that the input with id='checkbox1' is checked
+// to make the checkbox input valid
+// Listen on change event on checkbox element
+termsOfUseElement.addEventListener('change', ($event) => {
+  termsOfUseInput.isValid = $event.target.checked;
+  console.log(`Terms of use have been agreed to: ${termsOfUseInput.isValid}`);
+  if (termsOfUseInput.isValid) {
+    if (termsOfUseParentElement.lastChild === termsOfUseMessageElement) {
+      termsOfUseParentElement.removeChild(termsOfUseMessageElement);
+    }
+  }
+});
 
 /**
  * Form submission
@@ -390,9 +430,14 @@ const formIsValid = (inputs) => {
     console.log(`Invalid input field(s): ${confirmedInvalid}`);
     // The following 'if' block does not apply to radio buttons
     if (confirmedInvalid[0] !== 'radio') {
-      messageElement[0].textContent = message.content.onSubmit;
-      document.getElementById(confirmedInvalid[0]).style.border = input.style.inputBorderInvalid;
-      document.getElementById(confirmedInvalid[0]).style.backgroundColor = input.style.backgroundColorInvalid;
+      // Specific message and styles if terms of use not read and accepted
+      if (confirmedInvalid[0] === 'checkbox1') {
+        messageElement[0].textContent = message.content.termsOfUseInvalid;
+      } else {
+        messageElement[0].textContent = message.content.onSubmit;
+        document.getElementById(confirmedInvalid[0]).style.border = input.style.inputBorderInvalid;
+        document.getElementById(confirmedInvalid[0]).style.backgroundColor = input.style.backgroundColorInvalid;
+      }
       document.getElementById(confirmedInvalid[0]).parentElement.appendChild(messageElement[0]);
     } else {
       // This block only applies to radio buttons
@@ -408,6 +453,11 @@ form.addEventListener('submit', ($event) => {
   // Prevent page reload
   $event.preventDefault();
   formIsValid(inputs);
+
+  // Display error message if "terms of use" checkbox is left unchecked
+  // if (!termsOfUseElementIsValid) {
+  //   termsOfUseParentElement.appendChild(termsOfUseMessageElement);
+  // }
 });
 
 // Replace form content with success message
