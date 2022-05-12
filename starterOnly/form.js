@@ -72,6 +72,7 @@ class Input {
           if ($event.target.value !== '') {
             if (!dateOfBirthIsInPast) {
               console.log('Come on! You can\'t be born in the future!');
+              this.isValid = false;
               this.element.style.border = input.style.inputBorderInvalid;
               this.element.style.backgroundColor = input.style.backgroundColorInvalid;
               this.messageElement.textContent = message.content.dateOfBirthInvalid;
@@ -88,6 +89,7 @@ class Input {
             }
           } else {
             console.log('DOB field cannot be empty');
+            this.isValid = false;
             this.element.style.border = input.style.inputBorderInvalid;
             this.element.style.backgroundColor = input.style.backgroundColorInvalid;
             this.messageElement.textContent = message.content.empty.dateOfBirth;
@@ -135,7 +137,7 @@ const message = {
     },
     nameTooShort: 'Veuillez entrer au moins deux caractères',
     emailInvalid: 'Veuillez entrer une adresse email valide du type xx@xxx.xx',
-    dateOfBirthInvalid: 'Cette date de naissance est invalide',
+    dateOfBirthInvalid: 'Vous n\'êtes pas encore né!',
     numberOfTournamentsInvalid: 'Veuillez entrer un nombre entre 0 et 99 inclus'
   },
   id: {
@@ -302,17 +304,30 @@ const formIsValid = (inputs) => {
   let validInputs = 0;
   let invalidInputs = 0;
   let totalInputs = 0;
+  // An array to store invalid inputs
+  const confirmedInvalid = [];
+  // The message elements of the invalid inputs
+  const messageElement = [];
   // Check validity of each input in array
   inputs.forEach(input => {
     console.log(input.isValid);
     input.isValid ? validInputs++ : invalidInputs++;
     totalInputs++;
+    if (!input.isValid) {
+      confirmedInvalid.push(input.element.id);
+      messageElement.push(input.messageElement);
+    }
   })
-  if (invalidInputs === 0) {
+  if (invalidInputs === 0 && validInputs === totalInputs) {
     console.log('All inputs are valid! Form can be submitted!');
     replaceFormContent();
   } else {
-    console.log(`There are ${validInputs} valid inputs and ${invalidInputs} invalid inputs out of ${totalInputs}. Form cannot be submitted.`)
+    console.log(`There are ${validInputs} valid input(s) and ${invalidInputs} invalid input(s) out of ${totalInputs}. Form cannot be submitted.`)
+    console.log(`Invalid input field(s): ${confirmedInvalid}`);
+    messageElement[0].textContent = 'Erreur de saisie sur le champ ci-dessus';
+    document.getElementById(confirmedInvalid[0]).style.border = input.style.inputBorderInvalid;
+    document.getElementById(confirmedInvalid[0]).style.backgroundColor = input.style.backgroundColorInvalid;
+    document.getElementById(confirmedInvalid[0]).parentElement.appendChild(messageElement[0]);
   }
 };
 
