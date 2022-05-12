@@ -62,7 +62,7 @@ class Input {
       } else {
         // If current input is not validated using a regex
         // i.e. date of birth and tournament options inputs
-        
+
         // 1) If input type === 'date' (date of birth input)
         if (this.type === 'date') {
           // Declare a variable to indicate whether entered DOB is a past date
@@ -216,6 +216,10 @@ const dateOfBirthMessageElement = document.createElement('span');
 // Give it an id
 dateOfBirthMessageElement.setAttribute('id', message.id.dateOfBirth);
 
+/* ****************** FORM SUBMISSION ********************* */
+// The form element
+const form = document.querySelector('form');
+
 /* *************** STYLE MESSAGE ELEMENTS ****************** */
 // Create an array to store all message elements
 const messageElements = [firstNameMessageElement, lastNameMessageElement, emailMessageElement, dateOfBirthMessageElement];
@@ -243,10 +247,15 @@ inputs.forEach(input => input.validate());
 
 // Check that form is valid, i.e. all fields are valid, before submitting form
 // The inputs array is passed as only argument to the function
-// const formIsValid = (inputs) => {
-//   // Check validity of each input in array
-//   inputs.forEach(input => console.log(input.isValid));
-// };
+const formIsValid = (inputs) => {
+  // Check validity of each input in array
+  inputs.forEach(input => console.log(input.isValid));
+};
 
-// Call formIsValid function on form submit event
-// formIsValid(inputs); // Put inside event listener!!!
+// Add 'submit' event listener on form element
+// and call formIsValid function on form submit event
+form.addEventListener('submit', ($event) => {
+  // Prevent page reload
+  $event.preventDefault();
+  formIsValid(inputs);
+});
