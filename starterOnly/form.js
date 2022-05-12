@@ -14,9 +14,7 @@ class Input {
   }
 
   validate() {
-    console.log(`Entered validate() method for ${this.messageElementId}`);
     this.parentElement.addEventListener('input', ($event) => {
-      console.log(`Entered: ${$event.target.value}`);
       // Check whether there is a regex for current input
       // First & last names inputs, email & number of tournaments inputs
       if (this.regex) {
@@ -26,31 +24,27 @@ class Input {
           this.element.style.backgroundColor = input.style.backgroundColorValid;
           // If there is a message displayed, remove it
           if (document.getElementById(this.messageElementId)) {
-            this.parentElement.removeChild(this.messageElement); // Causes error when entering valid email address: Uncaught DOMException: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
+            this.parentElement.removeChild(this.messageElement);
           }
           this.isValid = true;
-          console.log('Input is valid');
         } else {
           // If input doesn't match regex, give it invalid styles
           this.element.style.border = input.style.inputBorderInvalid;
           this.element.style.backgroundColor = input.style.backgroundColorInvalid;
           // If input field is empty
           if ($event.target.value.length === 0) {
-            console.log('Ce champ ne peut pas être vide');
             this.messageElement.textContent = message.content.empty.generic;
           }
           // Only for name inputs, i.e. inputs with type 'text'
           // If input has only one character
           if (this.type === 'text') {
             if ($event.target.value.length === 1) {
-              console.log('Veuillez entrer au moins deux caractères');
               this.messageElement.textContent = message.content.nameTooShort;
             }
           }
           // Only for email input, when input field is not empty
           // (if field is empty, display generic message above)
           if (this.type === 'email' && $event.target.value.length !== 0) {
-            console.log('Veuillez entrer une adresse email valide du type xx@xxx.xx');
             // Set specific message indicating expected email pattern
             this.messageElement.textContent = message.content.emailInvalid;
           }
@@ -63,7 +57,6 @@ class Input {
           // Display message
           this.parentElement.appendChild(this.messageElement);
           this.isValid = false;
-          console.log('Input is invalid');
         }
       } else {
         // If current input is not validated using a regex
@@ -74,27 +67,22 @@ class Input {
           // Declare a variable to indicate whether entered DOB is a past date
           let dateOfBirthIsInPast;
           dateOfBirthIsInPast = Date.now() - Date.parse($event.target.value) > 0;
-          console.log(`Date of birth is in the past: ${dateOfBirthIsInPast}`);
           if ($event.target.value !== '') {
             if (!dateOfBirthIsInPast) {
-              console.log('Come on! You can\'t be born in the future!');
               this.isValid = false;
               this.element.style.border = input.style.inputBorderInvalid;
               this.element.style.backgroundColor = input.style.backgroundColorInvalid;
               this.messageElement.textContent = message.content.dateOfBirthInvalid;
               this.parentElement.appendChild(this.messageElement);
             } else {
-              console.log('DOB input is valid');
               this.isValid = true;
               this.element.style.border = input.style.inputBorderValid;
               this.element.style.backgroundColor = input.style.backgroundColorValid;
-              console.log(this.messageElement);
               if (document.getElementById(this.messageElementId)) {
                 this.parentElement.removeChild(this.messageElement);
               }
             }
           } else {
-            console.log('DOB field cannot be empty');
             this.isValid = false;
             this.element.style.border = input.style.inputBorderInvalid;
             this.element.style.backgroundColor = input.style.backgroundColorInvalid;
@@ -113,8 +101,6 @@ class Input {
             || tournamentLocation === 'Chicago'
             || tournamentLocation === 'Boston'
             || tournamentLocation === 'Portland';
-          console.log(`Option selected: ${tournamentLocation}`);
-          console.log(`Option is valid: ${this.isValid}`);
           // Remove error message if present
           if (this.isValid) {
             if (document.getElementById(this.messageElementId)) {
@@ -377,7 +363,6 @@ inputs.forEach(input => input.validate());
 // Listen on change event on checkbox element
 termsOfUseElement.addEventListener('change', ($event) => {
   termsOfUseInput.isValid = $event.target.checked;
-  console.log(`Terms of use have been agreed to: ${termsOfUseInput.isValid}`);
   if (termsOfUseInput.isValid) {
     if (termsOfUseParentElement.lastChild === termsOfUseMessageElement) {
       termsOfUseParentElement.removeChild(termsOfUseMessageElement);
@@ -403,7 +388,6 @@ const formIsValid = (inputs) => {
   const messageElement = [];
   // Check validity of each input in array
   inputs.forEach(input => {
-    console.log(input.isValid);
     input.isValid ? validInputs++ : invalidInputs++;
     totalInputs++;
     if (!input.isValid) {
@@ -412,7 +396,6 @@ const formIsValid = (inputs) => {
       // are targeting the parent element, not the radio
       // inputs themselves
       if (input.type === 'radio') {
-        console.log('No radio button selected!');
         confirmedInvalid.push('radio');
         messageElement.push(tournamentOptionsMessageElement);
       } else {
@@ -421,13 +404,9 @@ const formIsValid = (inputs) => {
       }
     }
   })
-  console.log(confirmedInvalid, messageElement);
   if (invalidInputs === 0 && validInputs === totalInputs) {
-    console.log('All inputs are valid! Form can be submitted!');
     replaceFormContent();
   } else {
-    console.log(`There are ${validInputs} valid input(s) and ${invalidInputs} invalid input(s) out of ${totalInputs}. Form cannot be submitted.`)
-    console.log(`Invalid input field(s): ${confirmedInvalid}`);
     // The following 'if' block does not apply to radio buttons
     if (confirmedInvalid[0] !== 'radio') {
       // Specific message and styles if terms of use not read and accepted
@@ -453,11 +432,6 @@ form.addEventListener('submit', ($event) => {
   // Prevent page reload
   $event.preventDefault();
   formIsValid(inputs);
-
-  // Display error message if "terms of use" checkbox is left unchecked
-  // if (!termsOfUseElementIsValid) {
-  //   termsOfUseParentElement.appendChild(termsOfUseMessageElement);
-  // }
 });
 
 // Replace form content with success message
