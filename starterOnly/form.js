@@ -23,6 +23,9 @@ class Input {
         // If there is a message displayed, remove it
         if (document.getElementById(this.messageElementId)) {
           this.parentElement.removeChild(this.messageElement);
+          console.log('Parent element: ', this.parentElement);
+          console.log('Message element: ', this.messageElement);
+          console.log('Message element id: ', this.messageElementId);
         }
         console.log('Input is valid');
       } else {
@@ -35,10 +38,20 @@ class Input {
           console.log('Ce champ ne peut pas être vide');
           this.messageElement.textContent = message.content.empty.generic;
         }
+        // Only for name inputs, i.e. inputs with type 'text'
         // If input has only one character
-        if ($event.target.value.length === 1) {
-          console.log('Veuillez entrer au moins deux caractères');
-          this.messageElement.textContent = message.content.nameTooShort;
+        if (this.type === 'text') {
+          if ($event.target.value.length === 1) {
+            console.log('Veuillez entrer au moins deux caractères');
+            this.messageElement.textContent = message.content.nameTooShort;
+          }
+        }
+        // Only for email input, when input field is not empty
+        // (if field is empty, display generic message above)
+        if (this.type === 'email' && $event.target.value.length !== 0) {
+          console.log('Veuillez entrer une adresse email valide du type xx@xxx.xx');
+          // Set specific message indicating expected email pattern
+          this.messageElement.textContent = message.content.emailInvalid;
         }
         // Display message
         this.parentElement.appendChild(this.messageElement);
@@ -134,9 +147,23 @@ const lastNameMessageElement = document.createElement('span');
 // Give it an id
 lastNameMessageElement.setAttribute('id', message.id.lastName);
 
+/* *********************** EMAIL ************************** */
+// 1) Target existing DOM elements
+// Email input
+const emailElement = document.getElementById('email');
+// Parent of email input
+const emailParentElement = emailElement.parentElement;
+
+// 2) Create DOM element
+// Create a span element that will contain a message
+// to be inserted after email element
+const emailMessageElement = document.createElement('span');
+// Give it an id
+emailMessageElement.setAttribute('id', message.id.email);
+
 /* *************** STYLE MESSAGE ELEMENTS ****************** */
 // Create an array to store all message elements
-const messageElements = [firstNameMessageElement, lastNameMessageElement];
+const messageElements = [firstNameMessageElement, lastNameMessageElement, emailMessageElement];
 // Style all elements in array
 messageElements.forEach(element => element.style.fontSize = input.style.fontSize);
 messageElements.forEach(element => element.style.color = input.style.color);
@@ -146,8 +173,9 @@ messageElements.forEach(element => element.style.color = input.style.color);
 // Instantiate inputs
 const firstNameInput = new Input(input.type.name, firstNameElement, firstNameParentElement, regex.name, firstNameMessageElement, message.id.firstName);
 const lastNameInput = new Input(input.type.name, lastNameElement, lastNameParentElement, regex.name, lastNameMessageElement, message.id.lastName);
+const emailInput = new Input(input.type.email, emailElement, emailParentElement, regex.email, emailMessageElement, message.id.email);
 
 // Create an array to store all inputs
-const inputs = [firstNameInput, lastNameInput];
+const inputs = [firstNameInput, lastNameInput, emailInput];
 // Call validation method on all inputs
 inputs.forEach(input => input.validate());
