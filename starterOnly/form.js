@@ -26,7 +26,7 @@ class Input {
           this.element.style.backgroundColor = input.style.backgroundColorValid;
           // If there is a message displayed, remove it
           if (document.getElementById(this.messageElementId)) {
-            this.parentElement.removeChild(this.messageElement);
+            this.parentElement.removeChild(this.messageElement); // Causes error when entering valid email address: Uncaught DOMException: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
           }
           this.isValid = true;
           console.log('Input is valid');
@@ -53,6 +53,12 @@ class Input {
             console.log('Veuillez entrer une adresse email valide du type xx@xxx.xx');
             // Set specific message indicating expected email pattern
             this.messageElement.textContent = message.content.emailInvalid;
+          }
+          // Only for number of tournaments input, when input field is not empty
+          // (if field is empty, display generic message above)
+          if (this.type === 'number') {
+            // Entered number is out or range
+            this.messageElement.textContent = message.content.numberOfTournamentsInvalid;
           }
           // Display message
           this.parentElement.appendChild(this.messageElement);
@@ -218,9 +224,23 @@ const dateOfBirthMessageElement = document.createElement('span');
 // Give it an id
 dateOfBirthMessageElement.setAttribute('id', message.id.dateOfBirth);
 
+/* **************** NUMBER OF TOURNAMENTS ****************** */
+// 1) Target existing DOM elements
+// Number of tournaments input
+const numberOfTournamentsElement = document.getElementById('quantity');
+// Parent of number of tournaments input
+const numberOfTournamentsParentElement = numberOfTournamentsElement.parentElement;
+
+// 2) Create DOM element
+// Create a span element that will contain a message
+// to be inserted after number of tournaments element
+const numberOfTournamentsMessageElement = document.createElement('span');
+// Give it an id
+numberOfTournamentsMessageElement.setAttribute('id', message.id.numberOfTournaments);
+
 /* *************** STYLE MESSAGE ELEMENTS ****************** */
 // Create an array to store all message elements
-const messageElements = [firstNameMessageElement, lastNameMessageElement, emailMessageElement, dateOfBirthMessageElement];
+const messageElements = [firstNameMessageElement, lastNameMessageElement, emailMessageElement, dateOfBirthMessageElement, numberOfTournamentsMessageElement];
 // Style all elements in array
 messageElements.forEach(element => element.style.fontSize = input.style.fontSize);
 messageElements.forEach(element => element.style.color = input.style.color);
@@ -286,9 +306,10 @@ const firstNameInput = new Input(input.type.name, firstNameElement, firstNamePar
 const lastNameInput = new Input(input.type.name, lastNameElement, lastNameParentElement, regex.name, lastNameMessageElement, message.id.lastName, false);
 const emailInput = new Input(input.type.email, emailElement, emailParentElement, regex.email, emailMessageElement, message.id.email, false);
 const dateOfBirthInput = new Input(input.type.dateOfBirth, dateOfBirthElement, dateOfBirthParentElement, null, dateOfBirthMessageElement, message.id.dateOfBirth, false);
+const numberOfTournamentsInput = new Input(input.type.numberOfTournaments, numberOfTournamentsElement, numberOfTournamentsParentElement, regex.numberOfTournaments, numberOfTournamentsMessageElement, message.id.numberOfTournaments, false);
 
 // Create an array to store all inputs
-const inputs = [firstNameInput, lastNameInput, emailInput, dateOfBirthInput];
+const inputs = [firstNameInput, lastNameInput, emailInput, dateOfBirthInput, numberOfTournamentsInput];
 // Call validation method on all inputs
 inputs.forEach(input => input.validate());
 
