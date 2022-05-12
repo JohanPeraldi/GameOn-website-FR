@@ -248,8 +248,22 @@ inputs.forEach(input => input.validate());
 // Check that form is valid, i.e. all fields are valid, before submitting form
 // The inputs array is passed as only argument to the function
 const formIsValid = (inputs) => {
+  // Initialize variables to keep track of valid & invalid inputs
+  // as well as total number of inputs processed
+  let validInputs = 0;
+  let invalidInputs = 0;
+  let totalInputs = 0;
   // Check validity of each input in array
-  inputs.forEach(input => console.log(input.isValid));
+  inputs.forEach(input => {
+    console.log(input.isValid);
+    input.isValid ? validInputs++ : invalidInputs++;
+    totalInputs++;
+  })
+  if (invalidInputs === 0) {
+    console.log('All inputs are valid! Form can be submitted!');
+  } else {
+    console.log(`There are ${validInputs} valid inputs and ${invalidInputs} invalid inputs out of ${totalInputs}. Form cannot be submitted.`)
+  }
 };
 
 // Add 'submit' event listener on form element
