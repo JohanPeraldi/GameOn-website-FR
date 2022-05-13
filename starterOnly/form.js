@@ -26,7 +26,7 @@ class Input {
           this.element.style.backgroundColor = input.style.backgroundColorValid;
           // If there is a message displayed, remove it
           if (document.getElementById(this.messageElementId)) {
-            this.parentElement.removeChild(this.messageElement); // Causes error when entering valid email address: Uncaught DOMException: Failed to execute 'removeChild' on 'Node': The node to be removed is not a child of this node.
+            this.parentElement.removeChild(this.messageElement);
           }
           this.isValid = true;
           console.log('Input is valid');
@@ -167,13 +167,13 @@ const message = {
     onSubmit: 'Erreur de saisie sur le champ ci-dessus'
   },
   id: {
-    firstName: 'first-name',
-    lastName: 'last-name',
-    email: 'email',
-    dateOfBirth: 'date-of-birth',
-    numberOfTournaments: 'number-of-tournaments',
-    tournamentOptions: 'tournament-options',
-    termsOfUse: 'terms-of-use'
+    firstName: 'first-name-message',
+    lastName: 'last-name-message',
+    email: 'email-message',
+    dateOfBirth: 'date-of-birth-message',
+    numberOfTournaments: 'number-of-tournaments-message',
+    tournamentOptions: 'tournament-options-message',
+    termsOfUse: 'terms-of-use-message'
   }
 };
 
