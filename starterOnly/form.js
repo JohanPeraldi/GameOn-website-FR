@@ -153,13 +153,13 @@ const message = {
     onSubmit: 'Erreur de saisie sur le champ ci-dessus'
   },
   id: {
-    firstName: 'first-name',
-    lastName: 'last-name',
-    email: 'email',
-    dateOfBirth: 'date-of-birth',
-    numberOfTournaments: 'number-of-tournaments',
-    tournamentOptions: 'tournament-options',
-    termsOfUse: 'terms-of-use'
+    firstName: 'first-name-message',
+    lastName: 'last-name-message',
+    email: 'email-message',
+    dateOfBirth: 'date-of-birth-message',
+    numberOfTournaments: 'number-of-tournaments-message',
+    tournamentOptions: 'tournament-options-message',
+    termsOfUse: 'terms-of-use-message'
   }
 };
 
