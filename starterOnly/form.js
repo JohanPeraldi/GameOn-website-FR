@@ -318,10 +318,8 @@ successModal.style.alignItems = 'center';
 successModal.style.height = '90vh';
 // Create a 'p' element to hold the message to be displayed
 const successMessageElement = document.createElement('p');
-// The message to display
-const successMessage = 'Merci pour votre inscription';
-// Add the contents of the message
-successMessageElement.textContent = successMessage;
+// Insert message element contents
+successMessageElement.innerHTML = 'Merci pour <span style="display: block">votre inscription</span>';
 // Style the message
 successMessageElement.style.fontSize = '32px';
 successMessageElement.style.textAlign = 'center';
